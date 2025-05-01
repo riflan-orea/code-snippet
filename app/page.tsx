@@ -215,7 +215,7 @@ export default function CodeImageGenerator() {
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto py-10 px-4">
+      <main className="max-w-5xl mx-auto py-10 px-4">
         <div className="flex flex-col gap-10">
           <Card className="p-8 rounded-xl shadow-md bg-white border border-gray-100">
             <h2 className="text-lg font-semibold mb-6 flex items-center gap-2 text-gray-900">
@@ -345,6 +345,15 @@ export default function CodeImageGenerator() {
                   />
                 </div>
               </div>
+              <div className="flex gap-4 mt-4">
+                <Button
+                  onClick={handleDownload}
+                  className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-sm transition"
+                >
+                  <Download className="w-4 h-4" />
+                  Download Image
+                </Button>
+              </div>
             </div>
           </Card>
 
@@ -443,13 +452,6 @@ export default function CodeImageGenerator() {
               )}
             </div>
             <div className="flex gap-4">
-              <Button
-                onClick={handleDownload}
-                className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-sm transition"
-              >
-                <Download className="w-4 h-4" />
-                Download Image
-              </Button>
               <Button
                 onClick={handleCopy}
                 variant="outline"
