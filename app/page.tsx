@@ -6,8 +6,8 @@ import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Download, Settings } from "lucide-react";
-import { EditorFrame } from "@/components/code-editor-frame";
+import { Download } from "lucide-react";
+import { EditorFrame } from "@/components/editor-frame";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
@@ -135,9 +135,9 @@ export default function CodeImageGenerator() {
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans">
+    <div className="min-h-screen bg-white font-sans flex flex-col">
       <header className="bg-white border-b border-gray-100 shadow-sm">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -148,27 +148,23 @@ export default function CodeImageGenerator() {
               <path d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
             </svg>
             <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-              Code Image Generator
+              Code Snippet
             </h1>
           </div>
-          <a
+          {/* <a
             href="https://github.com/yourusername/code-image-generator"
             target="_blank"
             rel="noopener noreferrer"
             className="text-indigo-600 hover:text-indigo-800 text-base font-medium"
           >
             GitHub
-          </a>
+          </a> */}
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto py-10 px-4">
+      <main className="max-w-5xl w-full mx-auto py-10 px-4">
         <div className="flex flex-col gap-10">
           <Card className="p-8 rounded-xl shadow-md bg-white border border-gray-100">
-            <h2 className="text-lg font-semibold mb-6 flex items-center gap-2 text-gray-900">
-              <Settings className="w-5 h-5 text-indigo-500" />
-              Code Image Generator
-            </h2>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="flex-1">
@@ -202,18 +198,7 @@ export default function CodeImageGenerator() {
                   />
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  id="showLineNumbers"
-                  checked={showLineNumbers}
-                  onChange={(e) => setShowLineNumbers(e.target.checked)}
-                  className="rounded border-gray-300 focus:ring-indigo-400"
-                />
-                <Label htmlFor="showLineNumbers" className="text-gray-700">
-                  Show Line Numbers
-                </Label>
-              </div>
+
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="flex-1">
                   <Label
@@ -250,6 +235,20 @@ export default function CodeImageGenerator() {
                   </div>
                 )}
               </div>
+
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="showLineNumbers"
+                  checked={showLineNumbers}
+                  onChange={(e) => setShowLineNumbers(e.target.checked)}
+                  className="rounded border-gray-300 focus:ring-indigo-400"
+                />
+                <Label htmlFor="showLineNumbers" className="text-gray-700">
+                  Show Line Numbers
+                </Label>
+              </div>
+
               <div>
                 <Label
                   htmlFor="code"
@@ -347,25 +346,23 @@ export default function CodeImageGenerator() {
                     </div>
                   )}
                 </div>
-                <div className="flex gap-4 mt-4">
-                  <Button
-                    onClick={handleDownload}
-                    className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-sm transition"
-                  >
-                    <Download className="w-4 h-4" />
-                    Download Image
-                  </Button>
-                </div>
+                <Button
+                  onClick={handleDownload}
+                  className="flex items-center justify-center gap-2 ml-auto cursor-pointer"
+                >
+                  <Download className="w-4 h-4" />
+                  Download Image
+                </Button>
               </div>
             </div>
           </Card>
         </div>
       </main>
 
-      <footer className="bg-white border-t border-gray-100 mt-16">
-        <div className="max-w-3xl mx-auto py-8 px-4">
+      <footer className="bg-white border-t border-gray-100 mt-auto flex">
+        <div className="max-w-5xl mx-auto py-8 px-4">
           <p className="text-center text-gray-400 text-base">
-            Code Image Generator – Create beautiful code screenshots for your
+            Code Snippet – Create beautiful code screenshots for your
             presentations and social media
           </p>
         </div>
