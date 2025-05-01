@@ -13,6 +13,12 @@ import { javascript } from "@codemirror/lang-javascript";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import html2canvas from "html2canvas";
 import { useCodeImageStore } from "@/lib/store";
+import {
+  debounce,
+  calculateEstimatedWidth,
+  calculateEditorHeight,
+  forceSupportedColors,
+} from "@/lib/utils";
 
 export default function CodeImageGenerator() {
   const {
@@ -35,15 +41,12 @@ export default function CodeImageGenerator() {
   const showControls = true;
 
   // Debounce for code editor
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const debouncedSetCode = debounce((value: string) => setCode(value), 300);
   const handleCodeChange = useCallback(
     (value: string) => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-      debounceRef.current = setTimeout(() => {
-        setCode(value);
-      }, 300);
+      debouncedSetCode(value);
     },
-    [setCode]
+    [debouncedSetCode]
   );
 
   // Carbon-style: dynamic width based on longest line, min 600px, max 1000px
@@ -52,13 +55,11 @@ export default function CodeImageGenerator() {
   const carbonMaxHeight = 900;
   const carbonPadding = 40;
   // Calculate width based on longest line
-  const longestLine = code
-    .split("\n")
-    .reduce((max, line) => Math.max(max, line.length), 0);
-  // Estimate: 9px per character + padding
-  const estimatedWidth = Math.min(
+  const estimatedWidth = calculateEstimatedWidth(
+    code,
+    minWidth,
     maxWidth,
-    Math.max(minWidth, Math.round(longestLine * 9 + carbonPadding * 2))
+    carbonPadding
   );
 
   // Auto-resize code editor height based on content
@@ -66,11 +67,9 @@ export default function CodeImageGenerator() {
   const codeLineCount = code.split("\n").length;
 
   useLayoutEffect(() => {
-    // Each line is about 24px (fontSize 14 + padding/margin), clamp to preview
-    const min = 120;
-    const max = carbonMaxHeight - carbonPadding * 2 - 60; // leave space for title/watermark
-    const ideal = codeLineCount * 24 + 32;
-    setEditorHeight(Math.max(min, Math.min(max, ideal)));
+    setEditorHeight(
+      calculateEditorHeight(codeLineCount, carbonMaxHeight, carbonPadding)
+    );
   }, [code, codeLineCount]);
 
   const fontSize = 14;
@@ -99,22 +98,6 @@ export default function CodeImageGenerator() {
       cloneContainer.style.height = `${container.offsetHeight}px`;
 
       // Recursively force supported background and text colors on all descendants
-      function forceSupportedColors(node: Element) {
-        if (node.nodeType !== 1) return;
-        const el = node as HTMLElement;
-        // Only override if computed style uses oklch or is transparent
-        const computed = window.getComputedStyle(el);
-        if (
-          computed.backgroundColor.includes("oklch") ||
-          computed.backgroundColor === "transparent"
-        ) {
-          el.style.backgroundColor = "#111827";
-        }
-        if (computed.color.includes("oklch")) {
-          el.style.color = "#f9fafb";
-        }
-        Array.from(el.children).forEach(forceSupportedColors);
-      }
       forceSupportedColors(cloneContainer);
 
       document.body.appendChild(cloneContainer);
