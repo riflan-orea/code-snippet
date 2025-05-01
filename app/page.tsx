@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Download, Copy, Settings } from "lucide-react";
+import { Download, Settings } from "lucide-react";
 import { EditorFrame } from "@/components/code-editor-frame";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
@@ -27,7 +27,6 @@ export default function CodeImageGenerator() {
   const [watermark, setWatermark] = useState("");
   const [watermarkOpacity, setWatermarkOpacity] = useState(0.5);
   const previewRef = useRef<HTMLDivElement>(null);
-  const editorRef = useRef<HTMLDivElement>(null);
   const editorFrameType = "vscode";
   const editorFrameTheme = "dark";
   const showControls = true;
@@ -143,50 +142,6 @@ export default function CodeImageGenerator() {
     }
   };
 
-  // Handle copy to clipboard
-  const handleCopy = async () => {
-    const container = previewRef.current;
-    if (!container) return;
-
-    try {
-      // Create a clone of the container to modify for export
-      const cloneContainer = container.cloneNode(true) as HTMLElement;
-
-      // Set border radius to 0 for export
-      cloneContainer.style.borderRadius = "0px";
-
-      // Temporarily add to document (hidden) for html2canvas to work
-      cloneContainer.style.position = "absolute";
-      cloneContainer.style.left = "-9999px";
-      document.body.appendChild(cloneContainer);
-
-      const canvas = await html2canvas(cloneContainer, {
-        scale: 2, // Higher resolution
-        backgroundColor: null,
-        logging: false,
-        useCORS: true,
-      });
-
-      // Remove the clone
-      document.body.removeChild(cloneContainer);
-
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-
-        // Create a ClipboardItem
-        const item = new ClipboardItem({ "image/png": blob });
-
-        // Copy to clipboard
-        navigator.clipboard
-          .write([item])
-          .then(() => alert("Image copied to clipboard!"))
-          .catch((err) => console.error("Failed to copy image: ", err));
-      });
-    } catch (error) {
-      console.error("Error copying image:", error);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-white font-sans">
       <header className="bg-white border-b border-gray-100 shadow-sm">
@@ -220,7 +175,7 @@ export default function CodeImageGenerator() {
           <Card className="p-8 rounded-xl shadow-md bg-white border border-gray-100">
             <h2 className="text-lg font-semibold mb-6 flex items-center gap-2 text-gray-900">
               <Settings className="w-5 h-5 text-indigo-500" />
-              Code Input
+              Code Image Generator
             </h2>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col md:flex-row gap-6">
@@ -311,155 +266,105 @@ export default function CodeImageGenerator() {
                   Code
                 </Label>
                 <div
-                  ref={editorRef}
-                  className="rounded-lg overflow-hidden border border-gray-200 bg-gray-50"
+                  ref={previewRef}
+                  className="overflow-hidden mb-6 rounded-xl bg-gray-900 relative mx-auto"
+                  style={
+                    {
+                      width: `${estimatedWidth}px`,
+                      minHeight: "120px",
+                      maxHeight: `${carbonMaxHeight}px`,
+                      padding: `${carbonPadding}px`,
+                      background: "#111827",
+                      "--background": "#111827",
+                      "--foreground": "#f9fafb",
+                      "--card": "#111827",
+                      "--card-foreground": "#f9fafb",
+                      "--popover": "#111827",
+                      "--popover-foreground": "#f9fafb",
+                      "--primary": "#4F46E5",
+                      "--primary-foreground": "#fff",
+                      "--border": "#22223b",
+                      "--input": "#22223b",
+                    } as React.CSSProperties
+                  }
                 >
-                  <CodeMirror
-                    value={code}
-                    height="300px"
-                    extensions={[javascript()]}
-                    onChange={handleCodeChange}
-                    theme={vscodeDark}
-                    basicSetup={{
-                      lineNumbers: true,
-                      highlightActiveLineGutter: true,
-                      highlightSpecialChars: true,
-                      foldGutter: true,
-                      dropCursor: true,
-                      allowMultipleSelections: true,
-                      indentOnInput: true,
-                      syntaxHighlighting: true,
-                      bracketMatching: true,
-                      closeBrackets: true,
-                      autocompletion: true,
-                      rectangularSelection: true,
-                      crosshairCursor: true,
-                      highlightActiveLine: true,
-                      highlightSelectionMatches: true,
-                      closeBracketsKeymap: true,
-                      searchKeymap: true,
-                      foldKeymap: true,
-                      completionKeymap: true,
-                      lintKeymap: true,
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="flex gap-4 mt-4">
-                <Button
-                  onClick={handleDownload}
-                  className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-sm transition"
-                >
-                  <Download className="w-4 h-4" />
-                  Download Image
-                </Button>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-8 rounded-xl shadow-md bg-white border border-gray-100">
-            <h2 className="text-lg font-semibold mb-6 text-gray-900">
-              Preview
-            </h2>
-            <div
-              ref={previewRef}
-              className="overflow-hidden mb-6 rounded-xl bg-gray-900 relative mx-auto"
-              style={
-                {
-                  width: `${estimatedWidth}px`,
-                  minHeight: "120px",
-                  maxHeight: `${carbonMaxHeight}px`,
-                  padding: `${carbonPadding}px`,
-                  background: "#111827",
-                  "--background": "#111827",
-                  "--foreground": "#f9fafb",
-                  "--card": "#111827",
-                  "--card-foreground": "#f9fafb",
-                  "--popover": "#111827",
-                  "--popover-foreground": "#f9fafb",
-                  "--primary": "#4F46E5",
-                  "--primary-foreground": "#fff",
-                  "--border": "#22223b",
-                  "--input": "#22223b",
-                } as React.CSSProperties
-              }
-            >
-              {displayTitle && (
-                <div
-                  className="mb-4 font-medium text-white text-center"
-                  style={{ fontSize: `${fontSize + 2}px` }}
-                >
-                  {displayTitle}
-                </div>
-              )}
-              <div>
-                <EditorFrame
-                  type={editorFrameType}
-                  theme={editorFrameTheme}
-                  title={title}
-                  showControls={showControls}
-                >
-                  <div
-                    className="rounded-md overflow-hidden"
-                    style={{ fontSize: `${fontSize}px` }}
-                  >
-                    <div style={{ backgroundColor: "#282c34" }}>
-                      <CodeMirror
-                        value={code}
-                        height={`${editorHeight}px`}
-                        extensions={[javascript()]}
-                        theme={vscodeDark}
-                        // editable={false}
-                        basicSetup={{
-                          lineNumbers: showLineNumbers,
-                          highlightActiveLineGutter: false,
-                          highlightSpecialChars: true,
-                          foldGutter: false,
-                          dropCursor: false,
-                          allowMultipleSelections: false,
-                          indentOnInput: false,
-                          syntaxHighlighting: true,
-                          bracketMatching: false,
-                          closeBrackets: false,
-                          autocompletion: false,
-                          rectangularSelection: false,
-                          crosshairCursor: false,
-                          highlightActiveLine: false,
-                          highlightSelectionMatches: false,
-                          closeBracketsKeymap: false,
-                          searchKeymap: false,
-                          foldKeymap: false,
-                          completionKeymap: false,
-                          lintKeymap: false,
-                        }}
-                        style={{ overflowY: "auto" }}
-                      />
+                  {displayTitle && (
+                    <div
+                      className="mb-4 font-medium text-white text-center"
+                      style={{ fontSize: `${fontSize + 2}px` }}
+                    >
+                      {displayTitle}
                     </div>
+                  )}
+                  <div>
+                    <EditorFrame
+                      type={editorFrameType}
+                      theme={editorFrameTheme}
+                      title={title}
+                      showControls={showControls}
+                    >
+                      <div
+                        className="rounded-md overflow-hidden"
+                        style={{ fontSize: `${fontSize}px` }}
+                      >
+                        <div style={{ backgroundColor: "#282c34" }}>
+                          <CodeMirror
+                            value={code}
+                            height={`${editorHeight}px`}
+                            extensions={[javascript()]}
+                            theme={vscodeDark}
+                            onChange={handleCodeChange}
+                            basicSetup={{
+                              lineNumbers: showLineNumbers,
+                              highlightActiveLineGutter: false,
+                              highlightSpecialChars: true,
+                              foldGutter: false,
+                              dropCursor: false,
+                              allowMultipleSelections: false,
+                              indentOnInput: false,
+                              syntaxHighlighting: true,
+                              bracketMatching: false,
+                              closeBrackets: false,
+                              autocompletion: false,
+                              rectangularSelection: false,
+                              crosshairCursor: false,
+                              highlightActiveLine: false,
+                              highlightSelectionMatches: false,
+                              closeBracketsKeymap: false,
+                              searchKeymap: false,
+                              foldKeymap: false,
+                              completionKeymap: false,
+                              lintKeymap: false,
+                            }}
+                            style={{ overflowY: "auto" }}
+                          />
+                        </div>
+                      </div>
+                    </EditorFrame>
                   </div>
-                </EditorFrame>
-              </div>
-              {watermark && (
-                <div
-                  className="absolute bottom-2 right-4 font-medium text-white"
-                  style={{
-                    opacity: watermarkOpacity,
-                    fontSize: `${fontSize * 0.8}px`,
-                    textShadow: "1px 1px 2px rgba(0,0,0,0.7)",
-                  }}
-                >
-                  {watermark}
+                  {watermark && (
+                    <div
+                      className="absolute bottom-2 right-4 font-medium text-white"
+                      style={{
+                        opacity: watermarkOpacity,
+                        fontSize: `${fontSize * 0.8}px`,
+                        textShadow: "1px 1px 2px rgba(0,0,0,0.7)",
+                      }}
+                    >
+                      {watermark}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-            <div className="flex gap-4">
-              <Button
-                onClick={handleCopy}
-                variant="outline"
-                className="flex items-center justify-center gap-2 border-gray-300 text-indigo-600 hover:bg-indigo-50 rounded-lg"
-              >
-                <Copy className="w-4 h-4" />
-                Copy to Clipboard
-              </Button>
+                <div className="flex gap-4 mt-4">
+                  <Button
+                    onClick={handleDownload}
+                    className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-sm transition"
+                  >
+                    <Download className="w-4 h-4" />
+                    Download Image
+                  </Button>
+                </div>
+              </div>
             </div>
           </Card>
         </div>
