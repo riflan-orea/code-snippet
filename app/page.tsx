@@ -12,20 +12,23 @@ import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import html2canvas from "html2canvas";
+import { useCodeImageStore } from "@/lib/store";
 
 export default function CodeImageGenerator() {
-  const [code, setCode] = useState(
-    `// JavaScript Example\nfunction greet(name) {\n  return ` +
-      "`Hello, " +
-      "${name}!`" +
-      `;\n}\nconsole.log(greet('World'));`
-  );
-  const [fontSize] = useState(14);
-  const [showLineNumbers, setShowLineNumbers] = useState(true);
-  const [title, setTitle] = useState("");
-  const [displayTitle, setDisplayTitle] = useState("");
-  const [watermark, setWatermark] = useState("");
-  const [watermarkOpacity, setWatermarkOpacity] = useState(0.5);
+  const {
+    code,
+    setCode,
+    showLineNumbers,
+    setShowLineNumbers,
+    title,
+    setTitle,
+    displayTitle,
+    setDisplayTitle,
+    watermark,
+    setWatermark,
+    watermarkOpacity,
+    setWatermarkOpacity,
+  } = useCodeImageStore();
   const previewRef = useRef<HTMLDivElement>(null);
   const editorFrameType = "vscode";
   const editorFrameTheme = "dark";
@@ -33,12 +36,15 @@ export default function CodeImageGenerator() {
 
   // Debounce for code editor
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
-  const handleCodeChange = useCallback((value: string) => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      setCode(value);
-    }, 300);
-  }, []);
+  const handleCodeChange = useCallback(
+    (value: string) => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(() => {
+        setCode(value);
+      }, 300);
+    },
+    [setCode]
+  );
 
   // Carbon-style: dynamic width based on longest line, min 600px, max 1000px
   const minWidth = 600;
@@ -58,13 +64,16 @@ export default function CodeImageGenerator() {
   // Auto-resize code editor height based on content
   const [editorHeight, setEditorHeight] = useState(200);
   const codeLineCount = code.split("\n").length;
+
   useLayoutEffect(() => {
     // Each line is about 24px (fontSize 14 + padding/margin), clamp to preview
     const min = 120;
     const max = carbonMaxHeight - carbonPadding * 2 - 60; // leave space for title/watermark
     const ideal = codeLineCount * 24 + 32;
     setEditorHeight(Math.max(min, Math.min(max, ideal)));
-  }, [code]);
+  }, [code, codeLineCount]);
+
+  const fontSize = 14;
 
   // Handle download
   const handleDownload = async () => {
