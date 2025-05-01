@@ -41,10 +41,20 @@ export default function CodeImageGenerator() {
     }, 300);
   }, []);
 
-  // Carbon-style: fixed width, auto height, max 900px
-  const carbonWidth = 600;
+  // Carbon-style: dynamic width based on longest line, min 600px, max 1000px
+  const minWidth = 600;
+  const maxWidth = 1000;
   const carbonMaxHeight = 900;
   const carbonPadding = 40;
+  // Calculate width based on longest line
+  const longestLine = code
+    .split("\n")
+    .reduce((max, line) => Math.max(max, line.length), 0);
+  // Estimate: 9px per character + padding
+  const estimatedWidth = Math.min(
+    maxWidth,
+    Math.max(minWidth, Math.round(longestLine * 9 + carbonPadding * 2))
+  );
 
   // Auto-resize code editor height based on content
   const [editorHeight, setEditorHeight] = useState(200);
@@ -347,7 +357,7 @@ export default function CodeImageGenerator() {
               className="overflow-hidden mb-6 rounded-xl bg-gray-900 relative mx-auto"
               style={
                 {
-                  width: `${carbonWidth}px`,
+                  width: `${estimatedWidth}px`,
                   minHeight: "120px",
                   maxHeight: `${carbonMaxHeight}px`,
                   padding: `${carbonPadding}px`,
@@ -390,7 +400,7 @@ export default function CodeImageGenerator() {
                         height={`${editorHeight}px`}
                         extensions={[javascript()]}
                         theme={vscodeDark}
-                        editable={false}
+                        // editable={false}
                         basicSetup={{
                           lineNumbers: showLineNumbers,
                           highlightActiveLineGutter: false,
