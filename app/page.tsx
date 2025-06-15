@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -10,6 +10,7 @@ import { Download } from "lucide-react";
 import { EditorFrame } from "@/components/editor-frame";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
+import { html } from "@codemirror/lang-html";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import html2canvas from "html2canvas";
 import { useCodeImageStore } from "@/lib/store";
@@ -18,6 +19,17 @@ import {
   calculateEstimatedWidth,
   forceSupportedColors,
 } from "@/lib/utils";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
+
+function getLanguageExtension(language: 'javascript' | 'html') {
+  switch (language) {
+    case 'html':
+      return html();
+    case 'javascript':
+    default:
+      return javascript();
+  }
+}
 
 export default function CodeImageGenerator() {
   const {
@@ -62,6 +74,8 @@ export default function CodeImageGenerator() {
   );
 
   const fontSize = 14;
+
+  const [selectedLanguage, setSelectedLanguage] = useState<'javascript' | 'html'>('javascript');
 
   // Handle download
   const handleDownload = async () => {
@@ -249,6 +263,19 @@ export default function CodeImageGenerator() {
                 </Label>
               </div>
 
+              <div className="mb-4 flex items-center gap-4">
+                <Label htmlFor="language" className="text-gray-700 font-medium">Language</Label>
+                <Select value={selectedLanguage} onValueChange={(value) => setSelectedLanguage(value as 'javascript' | 'html')}>
+                  <SelectTrigger id="language" className="w-40">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="javascript">JavaScript</SelectItem>
+                    <SelectItem value="html">HTML</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div>
                 <Label
                   htmlFor="code"
@@ -301,7 +328,7 @@ export default function CodeImageGenerator() {
                         <div style={{ backgroundColor: "#282c34" }}>
                           <CodeMirror
                             value={code}
-                            extensions={[javascript()]}
+                            extensions={[getLanguageExtension(selectedLanguage)]}
                             theme={vscodeDark}
                             onChange={handleCodeChange}
                             basicSetup={{
