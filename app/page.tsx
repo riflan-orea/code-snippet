@@ -11,6 +11,7 @@ import { EditorFrame } from "@/components/editor-frame";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { html } from "@codemirror/lang-html";
+import { go } from "@codemirror/lang-go";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import html2canvas from "html2canvas";
 import { useCodeImageStore } from "@/lib/store";
@@ -21,10 +22,12 @@ import {
 } from "@/lib/utils";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 
-function getLanguageExtension(language: 'javascript' | 'html') {
+function getLanguageExtension(language: 'javascript' | 'html' | 'go') {
   switch (language) {
     case 'html':
       return html();
+    case 'go':
+      return go();
     case 'javascript':
     default:
       return javascript();
@@ -75,7 +78,7 @@ export default function CodeImageGenerator() {
 
   const fontSize = 14;
 
-  const [selectedLanguage, setSelectedLanguage] = useState<'javascript' | 'html'>('javascript');
+  const [selectedLanguage, setSelectedLanguage] = useState<'javascript' | 'html' | 'go'>('javascript');
 
   // Handle download
   const handleDownload = async () => {
@@ -265,13 +268,14 @@ export default function CodeImageGenerator() {
 
               <div className="mb-4 flex items-center gap-4">
                 <Label htmlFor="language" className="text-gray-700 font-medium">Language</Label>
-                <Select value={selectedLanguage} onValueChange={(value) => setSelectedLanguage(value as 'javascript' | 'html')}>
+                <Select value={selectedLanguage} onValueChange={(value) => setSelectedLanguage(value as 'javascript' | 'html' | 'go')}>
                   <SelectTrigger id="language" className="w-40">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="javascript">JavaScript</SelectItem>
                     <SelectItem value="html">HTML</SelectItem>
+                    <SelectItem value="go">Go</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
