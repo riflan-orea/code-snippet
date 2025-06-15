@@ -39,9 +39,9 @@ export function calculateEditorHeight(
   carbonMaxHeight: number,
   carbonPadding: number
 ) {
-  const min = 120;
+  const min = 80;
   const max = carbonMaxHeight - carbonPadding * 2 - 60;
-  const ideal = codeLineCount * 24 + 32;
+  const ideal = codeLineCount * 18 + 20;
   return Math.max(min, Math.min(max, ideal));
 }
 

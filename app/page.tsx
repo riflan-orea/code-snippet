@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useLayoutEffect } from "react";
+import { useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -16,7 +16,6 @@ import { useCodeImageStore } from "@/lib/store";
 import {
   debounce,
   calculateEstimatedWidth,
-  calculateEditorHeight,
   forceSupportedColors,
 } from "@/lib/utils";
 
@@ -62,16 +61,6 @@ export default function CodeImageGenerator() {
     carbonPadding
   );
 
-  // Auto-resize code editor height based on content
-  const [editorHeight, setEditorHeight] = useState(200);
-  const codeLineCount = code.split("\n").length;
-
-  useLayoutEffect(() => {
-    setEditorHeight(
-      calculateEditorHeight(codeLineCount, carbonMaxHeight, carbonPadding)
-    );
-  }, [code, codeLineCount]);
-
   const fontSize = 14;
 
   // Handle download
@@ -88,6 +77,17 @@ export default function CodeImageGenerator() {
       // Set background color to match preview
       cloneContainer.style.background = "#111827";
       cloneContainer.style.backgroundColor = "#111827";
+      // Add extra bottom padding to the code area for screenshot
+      const cmContent = cloneContainer.querySelector('.cm-content');
+      if (cmContent) {
+        (cmContent as HTMLElement).style.paddingBottom = '10px';
+        // Add a dummy div to ensure padding is visible in screenshot
+        const dummyDiv = document.createElement('div');
+        dummyDiv.style.height = '10px';
+        dummyDiv.style.pointerEvents = 'none';
+        dummyDiv.style.background = 'transparent';
+        cmContent.appendChild(dummyDiv);
+      }
       // Ensure the clone is visible and rendered
       cloneContainer.style.position = "fixed";
       cloneContainer.style.left = "-9999px";
@@ -162,8 +162,8 @@ export default function CodeImageGenerator() {
         </div>
       </header>
 
-      <main className="max-w-5xl w-full mx-auto py-10 px-4">
-        <div className="flex flex-col gap-10">
+      <main className="max-w-5xl w-full mx-auto py-6 px-4">
+        <div className="flex flex-col gap-6">
           <Card className="p-8 rounded-xl shadow-md bg-white border border-gray-100">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col md:flex-row gap-6">
@@ -301,7 +301,6 @@ export default function CodeImageGenerator() {
                         <div style={{ backgroundColor: "#282c34" }}>
                           <CodeMirror
                             value={code}
-                            height={`${editorHeight}px`}
                             extensions={[javascript()]}
                             theme={vscodeDark}
                             onChange={handleCodeChange}
@@ -327,7 +326,6 @@ export default function CodeImageGenerator() {
                               completionKeymap: false,
                               lintKeymap: false,
                             }}
-                            style={{ overflowY: "auto" }}
                           />
                         </div>
                       </div>

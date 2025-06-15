@@ -120,3 +120,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Remove internal padding from CodeMirror editor */
+.cm-editor {
+  padding: 0 !important;
+}
+
+/* Add 5px padding to the bottom of the CodeMirror content area */
+.cm-content {
+  padding-bottom: 5px !important;
+}

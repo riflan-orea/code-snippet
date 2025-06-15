@@ -228,6 +228,7 @@ export function EditorFrame({
       style={{
         backgroundColor: currentStyle.background,
         borderColor: theme === "dark" ? "#555" : "#ddd",
+        marginBottom: 0,
       }}
     >
       {/* Title bar */}
