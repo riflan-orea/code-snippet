@@ -2,7 +2,6 @@
 
 import { useRef, useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -181,7 +180,7 @@ export default function CodeImageGenerator() {
 
       <main className="max-w-5xl w-full mx-auto py-6 px-4">
         <div className="flex flex-col gap-6">
-          <Card className="p-8 rounded-xl shadow-md bg-white border border-gray-100">
+          <div className="md:p-8 rounded-xl md:shadow-md bg-white md:border md:border-gray-100">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="flex-1">
@@ -253,6 +252,21 @@ export default function CodeImageGenerator() {
                 )}
               </div>
 
+              <div className="flex-1 flex flex-col w-full gap-1">
+                <Label htmlFor="language" className="text-gray-700 font-medium">Programming Language</Label>
+                <Select value={selectedLanguage} onValueChange={(value) => setSelectedLanguage(value as 'javascript' | 'html' | 'go')} >
+                  <SelectTrigger id="language" className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="javascript">JavaScript</SelectItem>
+                    <SelectItem value="html">HTML</SelectItem>
+                    <SelectItem value="go">Go</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+
               <div className="flex items-center gap-3">
                 <input
                   type="checkbox"
@@ -266,21 +280,7 @@ export default function CodeImageGenerator() {
                 </Label>
               </div>
 
-              <div className="mb-4 flex items-center gap-4">
-                <Label htmlFor="language" className="text-gray-700 font-medium">Language</Label>
-                <Select value={selectedLanguage} onValueChange={(value) => setSelectedLanguage(value as 'javascript' | 'html' | 'go')}>
-                  <SelectTrigger id="language" className="w-40">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="javascript">JavaScript</SelectItem>
-                    <SelectItem value="html">HTML</SelectItem>
-                    <SelectItem value="go">Go</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
+              <div className="flex flex-col gap-1 w-full overflow-auto">
                 <Label
                   htmlFor="code"
                   className="text-gray-700 font-medium mb-1 block"
@@ -375,16 +375,19 @@ export default function CodeImageGenerator() {
                     </div>
                   )}
                 </div>
-                <Button
+                
+              </div>
+
+              <Button
                   onClick={handleDownload}
                   className="flex items-center justify-center gap-2 ml-auto cursor-pointer"
                 >
                   <Download className="w-4 h-4" />
                   Download Image
                 </Button>
-              </div>
+                
             </div>
-          </Card>
+          </div>
         </div>
       </main>
 
