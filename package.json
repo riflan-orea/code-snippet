@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postbuild": "next-sitemap"
+    "postbuild": "next-sitemap",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@codemirror/lang-cpp": "^6.0.2",
@@ -54,6 +55,9 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.2.8",
     "typescript": "^5"
