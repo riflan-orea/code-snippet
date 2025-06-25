@@ -1,32 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-  <defs>
-    <!-- Teal gradient definition -->
-    <linearGradient id="tealGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#14b8a6;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#0f766e;stop-opacity:1" />
-    </linearGradient>
-  </defs>
-  
-  <!-- White circular background -->
-  <circle cx="24" cy="24" r="24" fill="white"/>
-  
-  <!-- File document structure with new code snippet -->
-  <g transform="translate(10, 10)" stroke="url(#tealGradient)" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <!-- File outline -->
-    <path d="M4 26h18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"/>
-    <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
-    
-    <!-- Original code snippet design inside the file -->
-    <!-- Code brackets -->
-    <path d="M7 16L5 18L7 20"/>
-    <path d="M15 16L17 18L15 20"/>
-    
-    <!-- Code lines -->
-    <line x1="6" y1="17" x2="13" y2="17"/>
-    <line x1="13" y1="19" x2="16" y2="19"/>
-    
-    <!-- Small dots representing code elements -->
-    <circle cx="17" cy="17" r="0.5" fill="url(#tealGradient)"/>
-    <circle cx="5" cy="19" r="0.5" fill="url(#tealGradient)"/>
-  </g>
+<svg width="74" height="74" viewBox="0 0 74 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_229_17)">
+<path d="M37 74C57.4345 74 74 57.4345 74 37C74 16.5655 57.4345 0 37 0C16.5655 0 0 16.5655 0 37C0 57.4345 16.5655 74 37 74Z" fill="url(#paint0_radial_229_17)"/>
+<path d="M16 21L32.341 37.341L16 53.6819" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M34.0882 21L57 21" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M34.0882 53.5588L45.335 53.6203L56.5817 53.6818" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M42.5294 37.8823L52.1765 37.8823" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<radialGradient id="paint0_radial_229_17" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(37 37) rotate(90) scale(37)">
+<stop stop-color="#16E0CA"/>
+<stop offset="1" stop-color="#148178"/>
+</radialGradient>
+<clipPath id="clip0_229_17">
+<rect width="74" height="74" fill="white"/>
+</clipPath>
+</defs>
 </svg>
