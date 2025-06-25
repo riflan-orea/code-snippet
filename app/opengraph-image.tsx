@@ -42,7 +42,7 @@ export default async function Image() {
             marginBottom: 24,
           }}
         >
-          <IconLogo width="64" height="64" />
+          <IconLogo />
         </div>
         <div
           style={{

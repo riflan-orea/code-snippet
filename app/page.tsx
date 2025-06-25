@@ -20,7 +20,7 @@ import {
   forceSupportedColors,
 } from "@/lib/utils";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
-import IconLogo from "@/components/IconLogo";
+import Image from "next/image";
 
 function getLanguageExtension(language: 'javascript' | 'html' | 'go') {
   switch (language) {
@@ -156,7 +156,7 @@ export default function CodeImageGenerator() {
       <header className="bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <IconLogo />
+            <Image src="/logo.svg" alt="Code Snippet" width={32} height={32} priority placeholder="blur" blurDataURL="/logo.svg" />
             {/* <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
