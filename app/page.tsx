@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Download, Settings } from "lucide-react";
+import { Download, Settings, Menu, X } from "lucide-react";
 import { EditorFrame } from "@/components/editor-frame";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
@@ -89,7 +89,7 @@ export default function CodeImageGenerator() {
   const fontSize = 14;
 
   const [selectedLanguage, setSelectedLanguage] = useState<'javascript' | 'html' | 'go'>('javascript');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // Default to closed for better mobile experience
 
   // Handle download
   const handleDownload = async () => {
@@ -169,14 +169,32 @@ export default function CodeImageGenerator() {
     <div className="h-screen flex flex-col overflow-hidden" >
       {/* Top Bar */}
       <header className="bg-card/50 z-10 border-b-gray-800 border-b">
-        <div className="px-6 py-3 flex justify-between items-center">
+        <div className="px-4 md:px-6 py-3 flex justify-between items-center">
           <div className="flex items-center gap-3">
+            {/* Mobile Menu Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-2 md:hidden"
+            >
+              {sidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </Button>
             <Image src="/logo.svg" alt="Code Snippet" width={28} height={28} priority placeholder="blur" blurDataURL="/logo.svg" />
             <h1 className="text-xl font-semibold text-foreground">
               Code Snippet
             </h1>
           </div>
           <div className="flex items-center gap-3">
+            {/* Desktop Settings Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-2 hidden md:flex"
+            >
+              <Settings className="w-4 h-4" />
+            </Button>
             <Button
               onClick={handleDownload}
               className="flex items-center gap-2"
@@ -189,30 +207,20 @@ export default function CodeImageGenerator() {
         </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Mobile Backdrop */}
+        {sidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black/50 z-40 md:hidden" 
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
 
         {/* Main Canvas */}
         <main className="flex-1 bg-muted/20 overflow-hidden relative">
           <div className="h-full flex flex-col">
-            {/* Canvas Header */}
-            <div className=" absolute top-2 right-2 z-10">
-              
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setSidebarOpen(!sidebarOpen)}
-                    className="p-2"
-                  >
-                    <Settings className="w-4 h-4" />
-                  </Button>
-                </div>
-                
-              
-            </div>
-
             {/* Canvas Content */}
-            <div className="flex-1 overflow-auto p-8">
+            <div className="flex-1 overflow-auto p-4 md:p-8">
               <div className="flex items-center justify-center min-h-full">
                 <div className="w-full max-w-6xl">
                   <div
@@ -312,8 +320,29 @@ export default function CodeImageGenerator() {
         </main>
 
          {/* Sidebar */}
-        <aside className={`${sidebarOpen ? 'w-80' : 'w-0'} transition-all duration-200 bg-card/50 backdrop-blur-sm overflow-hidden border-gray-800 border-l`}>
+        <aside className={`
+          fixed md:relative top-0 right-0 h-full z-50 
+          w-80 
+          bg-card/50 backdrop-blur-sm 
+          border-gray-800 border-l
+          transition-transform duration-200 ease-in-out
+          ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'}
+          md:transition-all md:duration-200
+          ${sidebarOpen ? 'md:w-80 md:translate-x-0' : 'md:w-0 md:translate-x-0'}
+        `}>
           <div className="p-4 space-y-6 h-full overflow-y-auto">
+            {/* Mobile Close Button */}
+            <div className="flex justify-between items-center md:hidden mb-4">
+              <h2 className="text-lg font-semibold text-foreground">Settings</h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSidebarOpen(false)}
+                className="p-2"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
             
             {/* Display Title */}
             <div className="space-y-2">
