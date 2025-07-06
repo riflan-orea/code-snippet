@@ -6,7 +6,7 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Download, Settings, Code, Palette, Type, Image as ImageIcon } from "lucide-react";
+import { Download, Settings } from "lucide-react";
 import { EditorFrame } from "@/components/editor-frame";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
@@ -303,15 +303,10 @@ export default function CodeImageGenerator() {
         <aside className={`${sidebarOpen ? 'w-80' : 'w-0'} transition-all duration-200 border-l border-border bg-card/50 backdrop-blur-sm overflow-hidden`}>
           <div className="p-4 space-y-6 h-full overflow-y-auto">
             
-            {/* Content Section */}
+            {/* All Controls in One Card */}
             <Card className="border-border/50 shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Type className="w-4 h-4" />
-                  Content
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6 pt-6">
+                {/* Display Title */}
                 <div className="space-y-2">
                   <Label htmlFor="displayTitle" className="text-xs font-medium text-muted-foreground">
                     Display Title
@@ -324,6 +319,8 @@ export default function CodeImageGenerator() {
                     className="text-sm"
                   />
                 </div>
+
+                {/* Window Title */}
                 <div className="space-y-2">
                   <Label htmlFor="title" className="text-xs font-medium text-muted-foreground">
                     Window Title
@@ -336,18 +333,8 @@ export default function CodeImageGenerator() {
                     className="text-sm"
                   />
                 </div>
-              </CardContent>
-            </Card>
 
-            {/* Language Section */}
-            <Card className="border-border/50 shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Code className="w-4 h-4" />
-                  Language
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+                {/* Programming Language */}
                 <div className="space-y-2">
                   <Label htmlFor="language" className="text-xs font-medium text-muted-foreground">
                     Programming Language
@@ -363,7 +350,9 @@ export default function CodeImageGenerator() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex items-center gap-2 pt-2">
+
+                {/* Show Line Numbers */}
+                <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     id="showLineNumbers"
@@ -375,18 +364,8 @@ export default function CodeImageGenerator() {
                     Show Line Numbers
                   </Label>
                 </div>
-              </CardContent>
-            </Card>
 
-            {/* Watermark Section */}
-            <Card className="border-border/50 shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4" />
-                  Watermark
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+                {/* Watermark Text */}
                 <div className="space-y-2">
                   <Label htmlFor="watermark" className="text-xs font-medium text-muted-foreground">
                     Watermark Text
@@ -399,6 +378,8 @@ export default function CodeImageGenerator() {
                     className="text-sm"
                   />
                 </div>
+
+                {/* Watermark Opacity */}
                 {watermark && (
                   <div className="space-y-2">
                     <Label htmlFor="watermarkOpacity" className="text-xs font-medium text-muted-foreground">
