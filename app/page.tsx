@@ -153,9 +153,9 @@ export default function CodeImageGenerator() {
   };
 
   return (
-    <div className="h-screen bg-background flex flex-col overflow-hidden">
+    <div className="h-screen flex flex-col overflow-hidden" >
       {/* Top Bar */}
-      <header className="bg-card shadow-sm z-10">
+      <header className="bg-card/50 z-10 border-b-gray-800 border-b">
         <div className="px-6 py-3 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <Image src="/logo.svg" alt="Code Snippet" width={28} height={28} priority placeholder="blur" blurDataURL="/logo.svg" />
@@ -298,7 +298,7 @@ export default function CodeImageGenerator() {
         </main>
 
          {/* Sidebar */}
-        <aside className={`${sidebarOpen ? 'w-80' : 'w-0'} transition-all duration-200 bg-card/50 backdrop-blur-sm overflow-hidden`}>
+        <aside className={`${sidebarOpen ? 'w-80' : 'w-0'} transition-all duration-200 bg-card/50 backdrop-blur-sm overflow-hidden border-gray-800 border-l`}>
           <div className="p-4 space-y-6 h-full overflow-y-auto">
             
             {/* Display Title */}
