@@ -50,9 +50,15 @@ export function forceSupportedColors(node: Element) {
   if (node.nodeType !== 1) return;
   const el = node as HTMLElement;
   const computed = window.getComputedStyle(el);
+  
+  // Skip elements with gradient backgrounds
+  const hasGradient = computed.background.includes("gradient") || 
+                     computed.backgroundImage.includes("gradient");
+  
   if (
-    computed.backgroundColor.includes("oklch") ||
-    computed.backgroundColor === "transparent"
+    !hasGradient &&
+    (computed.backgroundColor.includes("oklch") ||
+     computed.backgroundColor === "transparent")
   ) {
     el.style.backgroundColor = "#111827";
   }

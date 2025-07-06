@@ -20,6 +20,8 @@ import {
   forceSupportedColors,
 } from "@/lib/utils";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
+import { GradientSelector } from "@/components/ui/gradient-selector";
+import { createGradientCSS } from "@/lib/gradients";
 import Image from "next/image";
 
 function getLanguageExtension(language: 'javascript' | 'html' | 'go') {
@@ -48,6 +50,14 @@ export default function CodeImageGenerator() {
     setWatermark,
     watermarkOpacity,
     setWatermarkOpacity,
+    backgroundType,
+    setBackgroundType,
+    selectedGradient,
+    setSelectedGradient,
+    customGradient,
+    setCustomGradient,
+    gradientAngle,
+    setGradientAngle,
   } = useCodeImageStore();
   const previewRef = useRef<HTMLDivElement>(null);
   const editorFrameType = "vscode";
@@ -92,9 +102,12 @@ export default function CodeImageGenerator() {
 
       // Set border radius to 0 for export
       cloneContainer.style.borderRadius = "0px";
-      // Set background color to match preview
-      cloneContainer.style.background = "#111827";
-      cloneContainer.style.backgroundColor = "#111827";
+      // Set background to match preview (gradient or solid)
+      const backgroundStyle = backgroundType === 'gradient' 
+        ? createGradientCSS(selectedGradient, gradientAngle, customGradient)
+        : "#111827";
+      cloneContainer.style.background = backgroundStyle;
+      cloneContainer.style.backgroundColor = backgroundType === 'gradient' ? 'transparent' : "#111827";
       // Add extra bottom padding to the code area for screenshot
       const cmContent = cloneContainer.querySelector('.cm-content');
       if (cmContent) {
@@ -177,7 +190,6 @@ export default function CodeImageGenerator() {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-       
 
         {/* Main Canvas */}
         <main className="flex-1 bg-muted/20 overflow-hidden relative">
@@ -212,7 +224,9 @@ export default function CodeImageGenerator() {
                         minHeight: "120px",
                         maxHeight: `${carbonMaxHeight}px`,
                         padding: `${carbonPadding}px`,
-                        background: "#111827",
+                        background: backgroundType === 'gradient' 
+                          ? createGradientCSS(selectedGradient, gradientAngle, customGradient)
+                          : "#111827",
                         "--background": "#111827",
                         "--foreground": "#f9fafb",
                         "--card": "#111827",
@@ -358,6 +372,23 @@ export default function CodeImageGenerator() {
               <Label htmlFor="showLineNumbers" className="text-sm text-gray-100">
                 Show Line Numbers
               </Label>
+            </div>
+
+            {/* Gradient Background Options */}
+            <div className="space-y-2">
+              <Label className="text-xs font-medium text-muted-foreground">
+                Background Style
+              </Label>
+              <GradientSelector
+                backgroundType={backgroundType}
+                setBackgroundType={setBackgroundType}
+                selectedGradient={selectedGradient}
+                setSelectedGradient={setSelectedGradient}
+                customGradient={customGradient}
+                setCustomGradient={setCustomGradient}
+                gradientAngle={gradientAngle}
+                setGradientAngle={setGradientAngle}
+              />
             </div>
 
             {/* Watermark Text */}
