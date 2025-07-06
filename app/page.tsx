@@ -178,128 +178,6 @@ export default function CodeImageGenerator() {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <aside className={`${sidebarOpen ? 'w-80' : 'w-0'} transition-all duration-200 border-r border-border bg-card/50 backdrop-blur-sm overflow-hidden`}>
-          <div className="p-4 space-y-6 h-full overflow-y-auto">
-            
-            {/* Content Section */}
-            <Card className="border-border/50 shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Type className="w-4 h-4" />
-                  Content
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="displayTitle" className="text-xs font-medium text-muted-foreground">
-                    Display Title
-                  </Label>
-                  <Input
-                    id="displayTitle"
-                    value={displayTitle}
-                    onChange={(e) => setDisplayTitle(e.target.value)}
-                    placeholder="Optional title above code"
-                    className="text-sm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="title" className="text-xs font-medium text-muted-foreground">
-                    Window Title
-                  </Label>
-                  <Input
-                    id="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Window title"
-                    className="text-sm"
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Language Section */}
-            <Card className="border-border/50 shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Code className="w-4 h-4" />
-                  Language
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="language" className="text-xs font-medium text-muted-foreground">
-                    Programming Language
-                  </Label>
-                  <Select value={selectedLanguage} onValueChange={(value) => setSelectedLanguage(value as 'javascript' | 'html' | 'go')}>
-                    <SelectTrigger id="language" className="text-sm">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="javascript">JavaScript</SelectItem>
-                      <SelectItem value="html">HTML</SelectItem>
-                      <SelectItem value="go">Go</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex items-center gap-2 pt-2">
-                  <input
-                    type="checkbox"
-                    id="showLineNumbers"
-                    checked={showLineNumbers}
-                    onChange={(e) => setShowLineNumbers(e.target.checked)}
-                    className="rounded border-input text-primary focus:ring-primary"
-                  />
-                  <Label htmlFor="showLineNumbers" className="text-sm">
-                    Show Line Numbers
-                  </Label>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Watermark Section */}
-            <Card className="border-border/50 shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4" />
-                  Watermark
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="watermark" className="text-xs font-medium text-muted-foreground">
-                    Watermark Text
-                  </Label>
-                  <Input
-                    id="watermark"
-                    value={watermark}
-                    onChange={(e) => setWatermark(e.target.value)}
-                    placeholder="@yourhandle or yoursite.com"
-                    className="text-sm"
-                  />
-                </div>
-                {watermark && (
-                  <div className="space-y-2">
-                    <Label htmlFor="watermarkOpacity" className="text-xs font-medium text-muted-foreground">
-                      Opacity: {Math.round(watermarkOpacity * 100)}%
-                    </Label>
-                    <Slider
-                      id="watermarkOpacity"
-                      min={0.1}
-                      max={1}
-                      step={0.1}
-                      value={[watermarkOpacity]}
-                      onValueChange={(value) => setWatermarkOpacity(value[0])}
-                      className="py-2"
-                    />
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-          </div>
-        </aside>
-
         {/* Main Canvas */}
         <main className="flex-1 bg-muted/20 overflow-hidden">
           <div className="h-full flex flex-col">
@@ -420,6 +298,128 @@ export default function CodeImageGenerator() {
             </div>
           </div>
         </main>
+
+        {/* Sidebar */}
+        <aside className={`${sidebarOpen ? 'w-80' : 'w-0'} transition-all duration-200 border-l border-border bg-card/50 backdrop-blur-sm overflow-hidden`}>
+          <div className="p-4 space-y-6 h-full overflow-y-auto">
+            
+            {/* Content Section */}
+            <Card className="border-border/50 shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <Type className="w-4 h-4" />
+                  Content
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="displayTitle" className="text-xs font-medium text-muted-foreground">
+                    Display Title
+                  </Label>
+                  <Input
+                    id="displayTitle"
+                    value={displayTitle}
+                    onChange={(e) => setDisplayTitle(e.target.value)}
+                    placeholder="Optional title above code"
+                    className="text-sm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="title" className="text-xs font-medium text-muted-foreground">
+                    Window Title
+                  </Label>
+                  <Input
+                    id="title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Window title"
+                    className="text-sm"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Language Section */}
+            <Card className="border-border/50 shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <Code className="w-4 h-4" />
+                  Language
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="language" className="text-xs font-medium text-muted-foreground">
+                    Programming Language
+                  </Label>
+                  <Select value={selectedLanguage} onValueChange={(value) => setSelectedLanguage(value as 'javascript' | 'html' | 'go')}>
+                    <SelectTrigger id="language" className="text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="javascript">JavaScript</SelectItem>
+                      <SelectItem value="html">HTML</SelectItem>
+                      <SelectItem value="go">Go</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center gap-2 pt-2">
+                  <input
+                    type="checkbox"
+                    id="showLineNumbers"
+                    checked={showLineNumbers}
+                    onChange={(e) => setShowLineNumbers(e.target.checked)}
+                    className="rounded border-input text-primary focus:ring-primary"
+                  />
+                  <Label htmlFor="showLineNumbers" className="text-sm">
+                    Show Line Numbers
+                  </Label>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Watermark Section */}
+            <Card className="border-border/50 shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <ImageIcon className="w-4 h-4" />
+                  Watermark
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="watermark" className="text-xs font-medium text-muted-foreground">
+                    Watermark Text
+                  </Label>
+                  <Input
+                    id="watermark"
+                    value={watermark}
+                    onChange={(e) => setWatermark(e.target.value)}
+                    placeholder="@yourhandle or yoursite.com"
+                    className="text-sm"
+                  />
+                </div>
+                {watermark && (
+                  <div className="space-y-2">
+                    <Label htmlFor="watermarkOpacity" className="text-xs font-medium text-muted-foreground">
+                      Opacity: {Math.round(watermarkOpacity * 100)}%
+                    </Label>
+                    <Slider
+                      id="watermarkOpacity"
+                      min={0.1}
+                      max={1}
+                      step={0.1}
+                      value={[watermarkOpacity]}
+                      onValueChange={(value) => setWatermarkOpacity(value[0])}
+                      className="py-2"
+                    />
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+          </div>
+        </aside>
       </div>
     </div>
   );
