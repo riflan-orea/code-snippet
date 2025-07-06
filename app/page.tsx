@@ -155,7 +155,7 @@ export default function CodeImageGenerator() {
   return (
     <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Top Bar */}
-      <header className="border-b border-border bg-card shadow-sm z-10">
+      <header className="bg-card shadow-sm z-10">
         <div className="px-6 py-3 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <Image src="/logo.svg" alt="Code Snippet" width={28} height={28} priority placeholder="blur" blurDataURL="/logo.svg" />
@@ -177,110 +177,14 @@ export default function CodeImageGenerator() {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <aside className={`${sidebarOpen ? 'w-80' : 'w-0'} transition-all duration-200 border-l border-border bg-card/50 backdrop-blur-sm overflow-hidden`}>
-          <div className="p-4 space-y-6 h-full overflow-y-auto">
-            
-            {/* Display Title */}
-            <div className="space-y-2">
-              <Label htmlFor="displayTitle" className="text-xs font-medium text-muted-foreground">
-                Display Title
-              </Label>
-              <Input
-                id="displayTitle"
-                value={displayTitle}
-                onChange={(e) => setDisplayTitle(e.target.value)}
-                placeholder="Optional title above code"
-                className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
-              />
-            </div>
-
-            {/* Window Title */}
-            <div className="space-y-2">
-              <Label htmlFor="title" className="text-xs font-medium text-muted-foreground">
-                Window Title
-              </Label>
-              <Input
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Window title"
-                className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
-              />
-            </div>
-
-            {/* Programming Language */}
-            <div className="space-y-2">
-              <Label htmlFor="language" className="text-xs font-medium text-muted-foreground">
-                Programming Language
-              </Label>
-              <Select value={selectedLanguage} onValueChange={(value) => setSelectedLanguage(value as 'javascript' | 'html' | 'go')}>
-                <SelectTrigger id="language" className="text-sm bg-gray-800 border-gray-700 text-gray-100">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-700">
-                  <SelectItem value="javascript" className="text-gray-100 hover:bg-gray-700">JavaScript</SelectItem>
-                  <SelectItem value="html" className="text-gray-100 hover:bg-gray-700">HTML</SelectItem>
-                  <SelectItem value="go" className="text-gray-100 hover:bg-gray-700">Go</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Show Line Numbers */}
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="showLineNumbers"
-                checked={showLineNumbers}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setShowLineNumbers(e.target.checked)}
-                className="rounded border-gray-700 bg-gray-800 text-primary focus:ring-primary"
-              />
-              <Label htmlFor="showLineNumbers" className="text-sm text-gray-100">
-                Show Line Numbers
-              </Label>
-            </div>
-
-            {/* Watermark Text */}
-            <div className="space-y-2">
-              <Label htmlFor="watermark" className="text-xs font-medium text-muted-foreground">
-                Watermark Text
-              </Label>
-              <Input
-                id="watermark"
-                value={watermark}
-                onChange={(e) => setWatermark(e.target.value)}
-                placeholder="@yourhandle or yoursite.com"
-                className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
-              />
-            </div>
-
-            {/* Watermark Opacity */}
-            {watermark && (
-              <div className="space-y-2">
-                <Label htmlFor="watermarkOpacity" className="text-xs font-medium text-muted-foreground">
-                  Opacity: {Math.round(watermarkOpacity * 100)}%
-                </Label>
-                <Slider
-                  id="watermarkOpacity"
-                  min={0.1}
-                  max={1}
-                  step={0.1}
-                  value={[watermarkOpacity]}
-                  onValueChange={(value) => setWatermarkOpacity(value[0])}
-                  className="py-2"
-                />
-              </div>
-            )}
-
-          </div>
-        </aside>
+       
 
         {/* Main Canvas */}
-        <main className="flex-1 bg-muted/20 overflow-hidden">
+        <main className="flex-1 bg-muted/20 overflow-hidden relative">
           <div className="h-full flex flex-col">
             {/* Canvas Header */}
-            <div className="px-6 py-4 border-b border-border bg-card/30 backdrop-blur-sm">
-              <div className="flex justify-between items-center">
+            <div className=" absolute top-2 right-2 z-10">
+              
                 <div className="flex items-center gap-2">
                   <Button
                     variant="ghost"
@@ -291,10 +195,8 @@ export default function CodeImageGenerator() {
                     <Settings className="w-4 h-4" />
                   </Button>
                 </div>
-                <div className="text-xs text-muted-foreground">
-                  {estimatedWidth} × {carbonMaxHeight}px
-                </div>
-              </div>
+                
+              
             </div>
 
             {/* Canvas Content */}
@@ -394,6 +296,104 @@ export default function CodeImageGenerator() {
             </div>
           </div>
         </main>
+
+         {/* Sidebar */}
+        <aside className={`${sidebarOpen ? 'w-80' : 'w-0'} transition-all duration-200 bg-card/50 backdrop-blur-sm overflow-hidden`}>
+          <div className="p-4 space-y-6 h-full overflow-y-auto">
+            
+            {/* Display Title */}
+            <div className="space-y-2">
+              <Label htmlFor="displayTitle" className="text-xs font-medium text-muted-foreground">
+                Display Title
+              </Label>
+              <Input
+                id="displayTitle"
+                value={displayTitle}
+                onChange={(e) => setDisplayTitle(e.target.value)}
+                placeholder="Optional title above code"
+                className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
+              />
+            </div>
+
+            {/* Window Title */}
+            <div className="space-y-2">
+              <Label htmlFor="title" className="text-xs font-medium text-muted-foreground">
+                Window Title
+              </Label>
+              <Input
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Window title"
+                className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
+              />
+            </div>
+
+            {/* Programming Language */}
+            <div className="space-y-2">
+              <Label htmlFor="language" className="text-xs font-medium text-muted-foreground">
+                Programming Language
+              </Label>
+              <Select value={selectedLanguage} onValueChange={(value) => setSelectedLanguage(value as 'javascript' | 'html' | 'go')}>
+                <SelectTrigger id="language" className="text-sm bg-gray-800 border-gray-700 text-gray-100">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-800 border-gray-700">
+                  <SelectItem value="javascript" className="text-gray-100 hover:bg-gray-700">JavaScript</SelectItem>
+                  <SelectItem value="html" className="text-gray-100 hover:bg-gray-700">HTML</SelectItem>
+                  <SelectItem value="go" className="text-gray-100 hover:bg-gray-700">Go</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Show Line Numbers */}
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="showLineNumbers"
+                checked={showLineNumbers}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setShowLineNumbers(e.target.checked)}
+                className="rounded border-gray-700 bg-gray-800 text-primary focus:ring-primary"
+              />
+              <Label htmlFor="showLineNumbers" className="text-sm text-gray-100">
+                Show Line Numbers
+              </Label>
+            </div>
+
+            {/* Watermark Text */}
+            <div className="space-y-2">
+              <Label htmlFor="watermark" className="text-xs font-medium text-muted-foreground">
+                Watermark Text
+              </Label>
+              <Input
+                id="watermark"
+                value={watermark}
+                onChange={(e) => setWatermark(e.target.value)}
+                placeholder="@yourhandle or yoursite.com"
+                className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
+              />
+            </div>
+
+            {/* Watermark Opacity */}
+            {watermark && (
+              <div className="space-y-2">
+                <Label htmlFor="watermarkOpacity" className="text-xs font-medium text-muted-foreground">
+                  Opacity: {Math.round(watermarkOpacity * 100)}%
+                </Label>
+                <Slider
+                  id="watermarkOpacity"
+                  min={0.1}
+                  max={1}
+                  step={0.1}
+                  value={[watermarkOpacity]}
+                  onValueChange={(value) => setWatermarkOpacity(value[0])}
+                  className="py-2"
+                />
+              </div>
+            )}
+
+          </div>
+        </aside>
       </div>
     </div>
   );
