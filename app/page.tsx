@@ -48,6 +48,16 @@ export default function CodeImageGenerator() {
     setWatermark,
     watermarkOpacity,
     setWatermarkOpacity,
+    backgroundType,
+    setBackgroundType,
+    gradientDirection,
+    setGradientDirection,
+    gradientStartColor,
+    setGradientStartColor,
+    gradientEndColor,
+    setGradientEndColor,
+    selectedGradient,
+    setSelectedGradient,
   } = useCodeImageStore();
   const previewRef = useRef<HTMLDivElement>(null);
   const editorFrameType = "vscode";
@@ -81,6 +91,30 @@ export default function CodeImageGenerator() {
   const [selectedLanguage, setSelectedLanguage] = useState<'javascript' | 'html' | 'go'>('javascript');
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
+  // Gradient presets
+  const gradientPresets = [
+    { name: "Purple Blue", value: "linear-gradient(to bottom right, #667eea, #764ba2)" },
+    { name: "Orange Red", value: "linear-gradient(to bottom right, #ff6b6b, #ffa500)" },
+    { name: "Green Teal", value: "linear-gradient(to bottom right, #11998e, #38ef7d)" },
+    { name: "Pink Purple", value: "linear-gradient(to bottom right, #ee9ca7, #ffdde1)" },
+    { name: "Blue Cyan", value: "linear-gradient(to bottom right, #2193b0, #6dd5ed)" },
+    { name: "Sunset", value: "linear-gradient(to bottom right, #ff9a9e, #fecfef)" },
+    { name: "Ocean", value: "linear-gradient(to bottom right, #667eea, #764ba2)" },
+    { name: "Forest", value: "linear-gradient(to bottom right, #134e5e, #71b280)" },
+  ];
+
+  // Get current gradient style
+  const getCurrentGradient = () => {
+    if (backgroundType === "solid") {
+      return "#111827";
+    }
+    if (selectedGradient === "custom") {
+      return `linear-gradient(${gradientDirection}, ${gradientStartColor}, ${gradientEndColor})`;
+    }
+    const preset = gradientPresets.find(p => p.name === selectedGradient);
+    return preset?.value || gradientPresets[0].value;
+  };
+
   // Handle download
   const handleDownload = async () => {
     const container = previewRef.current;
@@ -92,9 +126,10 @@ export default function CodeImageGenerator() {
 
       // Set border radius to 0 for export
       cloneContainer.style.borderRadius = "0px";
-      // Set background color to match preview
-      cloneContainer.style.background = "#111827";
-      cloneContainer.style.backgroundColor = "#111827";
+      // Set background to match current gradient/solid selection
+      const currentBg = getCurrentGradient();
+      cloneContainer.style.background = currentBg;
+      cloneContainer.style.backgroundColor = backgroundType === "solid" ? currentBg : "transparent";
       // Add extra bottom padding to the code area for screenshot
       const cmContent = cloneContainer.querySelector('.cm-content');
       if (cmContent) {
@@ -177,8 +212,6 @@ export default function CodeImageGenerator() {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-       
-
         {/* Main Canvas */}
         <main className="flex-1 bg-muted/20 overflow-hidden relative">
           <div className="h-full flex flex-col">
@@ -205,14 +238,14 @@ export default function CodeImageGenerator() {
                 <div className="w-full max-w-6xl">
                   <div
                     ref={previewRef}
-                    className="overflow-hidden rounded-xl bg-gray-900 relative mx-auto shadow-2xl"
+                    className="overflow-hidden rounded-xl relative mx-auto shadow-2xl"
                     style={
                       {
                         width: `${estimatedWidth}px`,
                         minHeight: "120px",
                         maxHeight: `${carbonMaxHeight}px`,
                         padding: `${carbonPadding}px`,
-                        background: "#111827",
+                        background: getCurrentGradient(),
                         "--background": "#111827",
                         "--foreground": "#f9fafb",
                         "--card": "#111827",
@@ -390,6 +423,114 @@ export default function CodeImageGenerator() {
                   className="py-2"
                 />
               </div>
+            )}
+
+            {/* Background Type */}
+            <div className="space-y-2">
+              <Label htmlFor="backgroundType" className="text-xs font-medium text-muted-foreground">
+                Background Type
+              </Label>
+              <Select value={backgroundType} onValueChange={(value) => setBackgroundType(value as "solid" | "gradient")}>
+                <SelectTrigger id="backgroundType" className="text-sm bg-gray-800 border-gray-700 text-gray-100">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-800 border-gray-700">
+                  <SelectItem value="solid" className="text-gray-100 hover:bg-gray-700">Solid Color</SelectItem>
+                  <SelectItem value="gradient" className="text-gray-100 hover:bg-gray-700">Gradient</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Gradient Options */}
+            {backgroundType === "gradient" && (
+              <>
+                {/* Gradient Presets */}
+                <div className="space-y-2">
+                  <Label htmlFor="gradientPreset" className="text-xs font-medium text-muted-foreground">
+                    Gradient Preset
+                  </Label>
+                  <Select value={selectedGradient} onValueChange={(value) => setSelectedGradient(value)}>
+                    <SelectTrigger id="gradientPreset" className="text-sm bg-gray-800 border-gray-700 text-gray-100">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-700">
+                      {gradientPresets.map((preset) => (
+                        <SelectItem key={preset.name} value={preset.name} className="text-gray-100 hover:bg-gray-700">
+                          {preset.name}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="custom" className="text-gray-100 hover:bg-gray-700">Custom</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Custom Gradient Controls */}
+                {selectedGradient === "custom" && (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="gradientDirection" className="text-xs font-medium text-muted-foreground">
+                        Direction
+                      </Label>
+                      <Select value={gradientDirection} onValueChange={(value) => setGradientDirection(value)}>
+                        <SelectTrigger id="gradientDirection" className="text-sm bg-gray-800 border-gray-700 text-gray-100">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-gray-800 border-gray-700">
+                          <SelectItem value="to bottom right" className="text-gray-100 hover:bg-gray-700">↘ Bottom Right</SelectItem>
+                          <SelectItem value="to bottom" className="text-gray-100 hover:bg-gray-700">↓ Bottom</SelectItem>
+                          <SelectItem value="to bottom left" className="text-gray-100 hover:bg-gray-700">↙ Bottom Left</SelectItem>
+                          <SelectItem value="to right" className="text-gray-100 hover:bg-gray-700">→ Right</SelectItem>
+                          <SelectItem value="to left" className="text-gray-100 hover:bg-gray-700">← Left</SelectItem>
+                          <SelectItem value="to top right" className="text-gray-100 hover:bg-gray-700">↗ Top Right</SelectItem>
+                          <SelectItem value="to top" className="text-gray-100 hover:bg-gray-700">↑ Top</SelectItem>
+                          <SelectItem value="to top left" className="text-gray-100 hover:bg-gray-700">↖ Top Left</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <Label htmlFor="gradientStartColor" className="text-xs font-medium text-muted-foreground">
+                          Start Color
+                        </Label>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            id="gradientStartColor"
+                            type="color"
+                            value={gradientStartColor}
+                            onChange={(e) => setGradientStartColor(e.target.value)}
+                            className="w-12 h-8 p-1 bg-gray-800 border-gray-700 rounded cursor-pointer"
+                          />
+                          <Input
+                            value={gradientStartColor}
+                            onChange={(e) => setGradientStartColor(e.target.value)}
+                            className="text-xs bg-gray-800 border-gray-700 text-gray-100 flex-1"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="gradientEndColor" className="text-xs font-medium text-muted-foreground">
+                          End Color
+                        </Label>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            id="gradientEndColor"
+                            type="color"
+                            value={gradientEndColor}
+                            onChange={(e) => setGradientEndColor(e.target.value)}
+                            className="w-12 h-8 p-1 bg-gray-800 border-gray-700 rounded cursor-pointer"
+                          />
+                          <Input
+                            value={gradientEndColor}
+                            onChange={(e) => setGradientEndColor(e.target.value)}
+                            className="text-xs bg-gray-800 border-gray-700 text-gray-100 flex-1"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </>
             )}
 
           </div>
