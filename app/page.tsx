@@ -152,8 +152,8 @@ export default function CodeImageGenerator() {
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans flex flex-col">
-      <header className="bg-white border-b border-gray-100 shadow-sm">
+    <div className="min-h-screen bg-gray-900 font-sans flex flex-col">
+      <header className="bg-gray-800 border-b border-gray-700 shadow-sm">
         <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Image src="/logo.svg" alt="Code Snippet" width={32} height={32} priority placeholder="blur" blurDataURL="/logo.svg" />
@@ -165,7 +165,7 @@ export default function CodeImageGenerator() {
             >
               <path d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
             </svg> */}
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+            <h1 className="text-2xl font-bold text-gray-100 tracking-tight">
               Code Snippet
             </h1>
           </div>
@@ -182,13 +182,13 @@ export default function CodeImageGenerator() {
 
       <main className="max-w-5xl w-full mx-auto py-6 px-4">
         <div className="flex flex-col gap-6">
-          <div className="md:p-8 rounded-xl md:shadow-md bg-white md:border md:border-gray-100">
+          <div className="md:p-8 rounded-xl md:shadow-md bg-gray-800 md:border md:border-gray-700">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="flex-1">
                   <Label
                     htmlFor="displayTitle"
-                    className="text-gray-700 font-medium mb-1"
+                    className="text-gray-300 font-medium mb-1"
                   >
                     Display Title (optional)
                   </Label>
@@ -197,13 +197,13 @@ export default function CodeImageGenerator() {
                     value={displayTitle}
                     onChange={(e) => setDisplayTitle(e.target.value)}
                     placeholder="Enter a title to display above the code"
-                    className="mt-1 rounded-lg border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                    className="mt-1 rounded-lg bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
                   />
                 </div>
                 <div className="flex-1">
                   <Label
                     htmlFor="title"
-                    className="text-gray-700 font-medium mb-1"
+                    className="text-gray-300 font-medium mb-1"
                   >
                     Window Title
                   </Label>
@@ -212,7 +212,7 @@ export default function CodeImageGenerator() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Enter window title"
-                    className="mt-1 rounded-lg border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                    className="mt-1 rounded-lg bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
                   />
                 </div>
               </div>
@@ -221,7 +221,7 @@ export default function CodeImageGenerator() {
                 <div className="flex-1">
                   <Label
                     htmlFor="watermark"
-                    className="text-gray-700 font-medium mb-1"
+                    className="text-gray-300 font-medium mb-1"
                   >
                     Watermark (optional)
                   </Label>
@@ -230,14 +230,14 @@ export default function CodeImageGenerator() {
                     value={watermark}
                     onChange={(e) => setWatermark(e.target.value)}
                     placeholder="e.g. @yourhandle or yourwebsite.com"
-                    className="mt-1 rounded-lg border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                    className="mt-1 rounded-lg bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
                   />
                 </div>
                 {watermark && (
                   <div className="flex-1 flex flex-col justify-end">
                     <Label
                       htmlFor="watermarkOpacity"
-                      className="text-gray-700 font-medium mb-1"
+                      className="text-gray-300 font-medium mb-1"
                     >
                       Watermark Opacity: {Math.round(watermarkOpacity * 100)}%
                     </Label>
@@ -255,15 +255,15 @@ export default function CodeImageGenerator() {
               </div>
 
               <div className="flex-1 flex flex-col w-full gap-1">
-                <Label htmlFor="language" className="text-gray-700 font-medium">Programming Language</Label>
+                <Label htmlFor="language" className="text-gray-300 font-medium">Programming Language</Label>
                 <Select value={selectedLanguage} onValueChange={(value) => setSelectedLanguage(value as 'javascript' | 'html' | 'go')} >
-                  <SelectTrigger id="language" className="w-full">
+                  <SelectTrigger id="language" className="w-full bg-gray-700 border-gray-600 text-gray-100">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="javascript">JavaScript</SelectItem>
-                    <SelectItem value="html">HTML</SelectItem>
-                    <SelectItem value="go">Go</SelectItem>
+                  <SelectContent className="bg-gray-700 border-gray-600">
+                    <SelectItem value="javascript" className="text-gray-100 hover:bg-gray-600">JavaScript</SelectItem>
+                    <SelectItem value="html" className="text-gray-100 hover:bg-gray-600">HTML</SelectItem>
+                    <SelectItem value="go" className="text-gray-100 hover:bg-gray-600">Go</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -275,9 +275,9 @@ export default function CodeImageGenerator() {
                   id="showLineNumbers"
                   checked={showLineNumbers}
                   onChange={(e) => setShowLineNumbers(e.target.checked)}
-                  className="rounded border-gray-300 focus:ring-indigo-400"
+                  className="rounded border-gray-600 bg-gray-700 text-indigo-400 focus:ring-indigo-400"
                 />
-                <Label htmlFor="showLineNumbers" className="text-gray-700">
+                <Label htmlFor="showLineNumbers" className="text-gray-300">
                   Show Line Numbers
                 </Label>
               </div>
@@ -285,7 +285,7 @@ export default function CodeImageGenerator() {
               <div className="flex flex-col gap-1 w-full overflow-auto">
                 <Label
                   htmlFor="code"
-                  className="text-gray-700 font-medium mb-1 block"
+                  className="text-gray-300 font-medium mb-1 block"
                 >
                   Code
                 </Label>
@@ -393,7 +393,7 @@ export default function CodeImageGenerator() {
         </div>
       </main>
 
-      <footer className="bg-white border-t border-gray-100 mt-auto flex">
+      <footer className="bg-gray-800 border-t border-gray-700 mt-auto flex">
         <div className="max-w-5xl mx-auto py-8 px-4">
           <p className="text-center text-gray-400 text-base">
             Code Snippet – Create beautiful code screenshots for your
