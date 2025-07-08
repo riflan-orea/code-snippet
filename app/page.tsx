@@ -189,10 +189,13 @@ export default function CodeImageGenerator() {
         </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
 
-        {/* Main Canvas */}
-        <main className="flex-1 bg-muted/20 overflow-hidden relative">
+        {/* Sidebar - Shows first on mobile, second on larger screens */}
+        <aside className={`${sidebarOpen ? 'w-full md:w-80' : 'w-0'} transition-all duration-200 bg-card/50 backdrop-blur-sm overflow-hidden border-gray-800 md:border-l border-b md:border-b-0 order-1 md:order-2`}>
+
+        {/* Main Canvas - Shows second on mobile, first on larger screens */}
+        <main className="flex-1 bg-muted/20 overflow-hidden relative order-2 md:order-1">
           <div className="h-full flex flex-col">
             {/* Canvas Header */}
             <div className=" absolute top-2 right-2 z-10">
@@ -212,7 +215,7 @@ export default function CodeImageGenerator() {
             </div>
 
             {/* Canvas Content */}
-            <div className="flex-1 overflow-auto p-8">
+            <div className="flex-1 overflow-auto p-4 md:p-8">
               <div className="flex items-center justify-center min-h-full">
                 <div className="w-full max-w-6xl">
                   <div
@@ -310,9 +313,6 @@ export default function CodeImageGenerator() {
             </div>
           </div>
         </main>
-
-         {/* Sidebar */}
-        <aside className={`${sidebarOpen ? 'w-80' : 'w-0'} transition-all duration-200 bg-card/50 backdrop-blur-sm overflow-hidden border-gray-800 border-l`}>
           <div className="p-4 space-y-6 h-full overflow-y-auto">
             
             {/* Display Title */}
