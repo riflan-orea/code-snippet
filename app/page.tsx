@@ -342,8 +342,8 @@ export default function CodeImageGenerator() {
               className="absolute inset-0 bg-black/60 backdrop-blur-sm"
               onClick={() => setSidebarOpen(false)}
             />
-            <div className="absolute inset-x-4 top-4 bottom-4 rounded-2xl border border-gray-800 bg-card shadow-2xl overflow-hidden">
-              <div className="flex items-center justify-between p-4 border-b border-gray-800">
+            <div className="absolute inset-x-4 top-4 bottom-4 rounded-2xl border border-gray-800 bg-card shadow-2xl flex flex-col">
+              <div className="flex items-center justify-between p-4 border-b border-gray-800 flex-shrink-0">
                 <span className="text-sm font-medium text-muted-foreground">Settings</span>
                 <button
                   onClick={() => setSidebarOpen(false)}
@@ -353,7 +353,7 @@ export default function CodeImageGenerator() {
                   <X className="w-4 h-4 text-gray-200" />
                 </button>
               </div>
-              <div className="overflow-y-auto h-full">
+              <div className="flex-1 overflow-y-auto min-h-0">
                 <ControlsPanel selectedLanguage={selectedLanguage} onSelectedLanguageChange={setSelectedLanguage} />
               </div>
             </div>
