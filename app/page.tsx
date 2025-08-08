@@ -2,7 +2,7 @@
 
 import { useRef, useCallback, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Download, Settings, X } from "lucide-react";
+import { Download, AlignJustify, X } from "lucide-react";
 import { EditorFrame } from "@/components/editor-frame";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
@@ -19,6 +19,7 @@ import {
 import { createGradientCSS } from "@/lib/gradients";
 import Image from "next/image";
 import { ControlsPanel, SupportedLanguage } from "@/components/controls-panel";
+import { createPortal } from "react-dom";
 
 function getLanguageExtension(language: 'javascript' | 'html' | 'go') {
   switch (language) {
@@ -196,11 +197,11 @@ export default function CodeImageGenerator() {
           <div className="flex items-center gap-2 md:gap-3">
             <Button
               onClick={handleDownload}
-              className="hidden sm:inline-flex items-center gap-2"
+              className="inline-flex items-center gap-2"
               size="sm"
             >
               <Download className="w-4 h-4" />
-              Export
+              <span className="hidden sm:inline">Export</span>
             </Button>
             <Button
               variant="ghost"
@@ -209,7 +210,7 @@ export default function CodeImageGenerator() {
               className="p-2 md:hidden"
               aria-label="Open settings"
             >
-              <Settings className="w-4 h-4" />
+              <AlignJustify className="w-4 h-4" />
             </Button>
           </div>
         </div>
@@ -332,14 +333,14 @@ export default function CodeImageGenerator() {
           <ControlsPanel selectedLanguage={selectedLanguage} onSelectedLanguageChange={setSelectedLanguage} />
         </aside>
 
-        {/* Mobile Settings Bottom Sheet */}
-        {sidebarOpen && (
+        {/* Mobile Settings Portal */}
+        {sidebarOpen && typeof window !== 'undefined' && createPortal(
           <div className="md:hidden fixed inset-0 z-50">
             <div
               className="absolute inset-0 bg-black/60 backdrop-blur-sm"
               onClick={() => setSidebarOpen(false)}
             />
-            <div className="absolute inset-x-0 bottom-0 max-h-[85vh] rounded-t-2xl border-t border-gray-800 bg-card shadow-2xl">
+            <div className="absolute inset-x-4 top-4 bottom-4 rounded-2xl border border-gray-800 bg-card shadow-2xl overflow-hidden">
               <div className="flex items-center justify-between p-4 border-b border-gray-800">
                 <span className="text-sm font-medium text-muted-foreground">Settings</span>
                 <button
@@ -350,9 +351,12 @@ export default function CodeImageGenerator() {
                   <X className="w-4 h-4 text-gray-200" />
                 </button>
               </div>
-              <ControlsPanel selectedLanguage={selectedLanguage} onSelectedLanguageChange={setSelectedLanguage} />
+              <div className="overflow-y-auto h-full">
+                <ControlsPanel selectedLanguage={selectedLanguage} onSelectedLanguageChange={setSelectedLanguage} />
+              </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
       </div>
     </div>
