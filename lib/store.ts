@@ -28,6 +28,8 @@ interface CodeImageState {
   setCustomGradient: (gradient: string) => void;
   gradientAngle: number;
   setGradientAngle: (angle: number) => void;
+  backgroundColor: string;
+  setBackgroundColor: (color: string) => void;
 }
 
 export const useCodeImageStore = create<CodeImageState>((set) => ({
@@ -55,4 +57,6 @@ export const useCodeImageStore = create<CodeImageState>((set) => ({
   setCustomGradient: (gradient: string) => set({ customGradient: gradient }),
   gradientAngle: 45,
   setGradientAngle: (angle: number) => set({ gradientAngle: angle }),
+  backgroundColor: '#374151',
+  setBackgroundColor: (color: string) => set({ backgroundColor: color }),
 }));
