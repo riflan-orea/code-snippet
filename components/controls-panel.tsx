@@ -34,6 +34,8 @@ export function ControlsPanel({ selectedLanguage, onSelectedLanguageChange }: Co
     setCustomGradient,
     gradientAngle,
     setGradientAngle,
+    backgroundColor,
+    setBackgroundColor,
   } = useCodeImageStore();
 
   return (
@@ -95,6 +97,54 @@ export function ControlsPanel({ selectedLanguage, onSelectedLanguageChange }: Co
         <Label htmlFor="showLineNumbers" className="text-sm text-gray-100">
           Show Line Numbers
         </Label>
+      </div>
+
+      {/* Background Color */}
+      <div className="space-y-2">
+        <Label htmlFor="backgroundColor" className="text-xs font-medium text-muted-foreground">
+          Background Color
+        </Label>
+        <div className="grid grid-cols-6 gap-1">
+          {[
+            { name: 'Slate', value: '#1e293b' },
+            { name: 'Gray', value: '#374151' },
+            { name: 'Zinc', value: '#3f3f46' },
+            { name: 'Neutral', value: '#52525b' },
+            { name: 'Stone', value: '#57534e' },
+            { name: 'Red', value: '#7f1d1d' },
+            { name: 'Orange', value: '#9a3412' },
+            { name: 'Amber', value: '#92400e' },
+            { name: 'Yellow', value: '#a16207' },
+            { name: 'Lime', value: '#3f6212' },
+            { name: 'Green', value: '#14532d' },
+            { name: 'Emerald', value: '#064e3b' },
+            { name: 'Teal', value: '#134e4a' },
+            { name: 'Cyan', value: '#164e63' },
+            { name: 'Sky', value: '#0c4a6e' },
+            { name: 'Blue', value: '#1e3a8a' },
+            { name: 'Indigo', value: '#312e81' },
+            { name: 'Violet', value: '#4c1d95' },
+            { name: 'Purple', value: '#581c87' },
+            { name: 'Fuchsia', value: '#701a75' },
+            { name: 'Pink', value: '#831843' },
+            { name: 'Rose', value: '#9f1239' },
+          ].map((color) => (
+            <div key={color.value} className="flex flex-col items-center gap-1">
+              <button
+                onClick={() => setBackgroundColor(color.value)}
+                className={`w-8 h-8 rounded border transition-all ${
+                  backgroundColor === color.value
+                    ? 'border-primary ring-1 ring-primary'
+                    : 'border-gray-600 hover:border-gray-500'
+                }`}
+                style={{ backgroundColor: color.value }}
+                title={color.name}
+                aria-label={`Select ${color.name} background color`}
+              />
+              <span className="text-xs text-gray-500 text-center leading-3">{color.name}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Gradient Background Options */}

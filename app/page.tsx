@@ -55,6 +55,8 @@ export default function CodeImageGenerator() {
     setCustomGradient,
     gradientAngle,
     setGradientAngle,
+    backgroundColor,
+    setBackgroundColor,
   } = useCodeImageStore();
   const previewRef = useRef<HTMLDivElement>(null);
   const editorFrameType = "vscode";
@@ -123,9 +125,9 @@ export default function CodeImageGenerator() {
       // Set background to match preview (gradient or solid)
       const backgroundStyle = backgroundType === 'gradient' 
         ? createGradientCSS(selectedGradient, gradientAngle, customGradient)
-        : "#111827";
+        : backgroundColor;
       cloneContainer.style.background = backgroundStyle;
-      cloneContainer.style.backgroundColor = backgroundType === 'gradient' ? 'transparent' : "#111827";
+      cloneContainer.style.backgroundColor = backgroundType === 'gradient' ? 'transparent' : backgroundColor;
       // Add extra bottom padding to the code area for screenshot
       const cmContent = cloneContainer.querySelector('.cm-content');
       if (cmContent) {
@@ -243,12 +245,12 @@ export default function CodeImageGenerator() {
                         padding: `${carbonPadding}px`,
                         background: backgroundType === 'gradient' 
                           ? createGradientCSS(selectedGradient, gradientAngle, customGradient)
-                          : "#111827",
-                        "--background": "#111827",
+                          : backgroundColor,
+                        "--background": backgroundColor,
                         "--foreground": "#f9fafb",
-                        "--card": "#111827",
+                        "--card": backgroundColor,
                         "--card-foreground": "#f9fafb",
-                        "--popover": "#111827",
+                        "--popover": backgroundColor,
                         "--popover-foreground": "#f9fafb",
                         "--primary": "#4F46E5",
                         "--primary-foreground": "#fff",
