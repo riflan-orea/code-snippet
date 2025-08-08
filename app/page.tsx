@@ -1,11 +1,8 @@
 "use client";
 
-import { useRef, useCallback, useState } from "react";
+import { useRef, useCallback, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Download, Settings } from "lucide-react";
+import { Download, Settings, X } from "lucide-react";
 import { EditorFrame } from "@/components/editor-frame";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
@@ -19,10 +16,9 @@ import {
   calculateEstimatedWidth,
   forceSupportedColors,
 } from "@/lib/utils";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
-import { GradientSelector } from "@/components/ui/gradient-selector";
 import { createGradientCSS } from "@/lib/gradients";
 import Image from "next/image";
+import { ControlsPanel, SupportedLanguage } from "@/components/controls-panel";
 
 function getLanguageExtension(language: 'javascript' | 'html' | 'go') {
   switch (language) {
@@ -73,23 +69,44 @@ export default function CodeImageGenerator() {
     [debouncedSetCode]
   );
 
-  // Carbon-style: dynamic width based on longest line, min 600px, max 1000px
-  const minWidth = 600;
-  const maxWidth = 1000;
+  // Responsive sizing for preview
+  const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1024);
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  const isSmallScreen = windowWidth < 768;
+
+  // Carbon-style: dynamic width based on longest line, responsive for mobile
+  const baseMinWidth = 600;
+  const smallScreenMinWidth = 280;
   const carbonMaxHeight = 900;
   const carbonPadding = 40;
-  // Calculate width based on longest line
+  const responsiveMinWidth = isSmallScreen ? smallScreenMinWidth : baseMinWidth;
+  const viewportMaxWidth = Math.max(320, windowWidth - carbonPadding * 2);
+  const responsiveMaxWidth = isSmallScreen ? Math.min(1000, viewportMaxWidth) : 1000;
   const estimatedWidth = calculateEstimatedWidth(
     code,
-    minWidth,
-    maxWidth,
+    responsiveMinWidth,
+    responsiveMaxWidth,
     carbonPadding
   );
 
   const fontSize = 14;
 
-  const [selectedLanguage, setSelectedLanguage] = useState<'javascript' | 'html' | 'go'>('javascript');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [selectedLanguage, setSelectedLanguage] = useState<SupportedLanguage>('javascript');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const initial = window.innerWidth >= 768;
+      setSidebarOpen(initial);
+      const mq = window.matchMedia('(min-width: 768px)');
+      const listener = (e: MediaQueryListEvent) => setSidebarOpen(e.matches);
+      mq.addEventListener('change', listener);
+      return () => mq.removeEventListener('change', listener);
+    }
+  }, []);
 
   // Handle download
   const handleDownload = async () => {
@@ -169,21 +186,30 @@ export default function CodeImageGenerator() {
     <div className="h-screen flex flex-col overflow-hidden" >
       {/* Top Bar */}
       <header className="bg-card/50 z-10 border-b-gray-800 border-b">
-        <div className="px-6 py-3 flex justify-between items-center">
+        <div className="px-4 md:px-6 py-3 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <Image src="/logo.svg" alt="Code Snippet" width={28} height={28} priority placeholder="blur" blurDataURL="/logo.svg" />
-            <h1 className="text-xl font-semibold text-foreground">
+            <h1 className="text-lg md:text-xl font-semibold text-foreground">
               Code Snippet
             </h1>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
             <Button
               onClick={handleDownload}
-              className="flex items-center gap-2"
+              className="hidden sm:inline-flex items-center gap-2"
               size="sm"
             >
               <Download className="w-4 h-4" />
               Export
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 md:hidden"
+              aria-label="Open settings"
+            >
+              <Settings className="w-4 h-4" />
             </Button>
           </div>
         </div>
@@ -196,28 +222,25 @@ export default function CodeImageGenerator() {
           <div className="h-full flex flex-col">
             {/* Canvas Header */}
             <div className=" absolute top-2 right-2 z-10">
-              
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setSidebarOpen(!sidebarOpen)}
-                    className="p-2"
-                  >
-                    <Settings className="w-4 h-4" />
-                  </Button>
-                </div>
-                
-              
+              <div className="hidden md:flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                  className="p-2"
+                >
+                  <Settings className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
 
             {/* Canvas Content */}
-            <div className="flex-1 overflow-auto p-8">
+            <div className="flex-1 overflow-auto p-4 md:p-8">
               <div className="flex items-center justify-center min-h-full">
                 <div className="w-full max-w-6xl">
                   <div
                     ref={previewRef}
-                    className="overflow-hidden rounded-xl bg-gray-900 relative mx-auto shadow-2xl"
+                    className="overflow-hidden rounded-xl bg-gray-900 relative mx-auto shadow-2xl max-w-full"
                     style={
                       {
                         width: `${estimatedWidth}px`,
@@ -311,120 +334,33 @@ export default function CodeImageGenerator() {
           </div>
         </main>
 
-         {/* Sidebar */}
-        <aside className={`${sidebarOpen ? 'w-80' : 'w-0'} transition-all duration-200 bg-card/50 backdrop-blur-sm overflow-hidden border-gray-800 border-l`}>
-          <div className="p-4 space-y-6 h-full overflow-y-auto">
-            
-            {/* Display Title */}
-            <div className="space-y-2">
-              <Label htmlFor="displayTitle" className="text-xs font-medium text-muted-foreground">
-                Display Title
-              </Label>
-              <Input
-                id="displayTitle"
-                value={displayTitle}
-                onChange={(e) => setDisplayTitle(e.target.value)}
-                placeholder="Optional title above code"
-                className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
-              />
-            </div>
-
-            {/* Window Title */}
-            <div className="space-y-2">
-              <Label htmlFor="title" className="text-xs font-medium text-muted-foreground">
-                Window Title
-              </Label>
-              <Input
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Window title"
-                className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
-              />
-            </div>
-
-            {/* Programming Language */}
-            <div className="space-y-2">
-              <Label htmlFor="language" className="text-xs font-medium text-muted-foreground">
-                Programming Language
-              </Label>
-              <Select value={selectedLanguage} onValueChange={(value) => setSelectedLanguage(value as 'javascript' | 'html' | 'go')}>
-                <SelectTrigger id="language" className="text-sm bg-gray-800 border-gray-700 text-gray-100">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-700">
-                  <SelectItem value="javascript" className="text-gray-100 hover:bg-gray-700">JavaScript</SelectItem>
-                  <SelectItem value="html" className="text-gray-100 hover:bg-gray-700">HTML</SelectItem>
-                  <SelectItem value="go" className="text-gray-100 hover:bg-gray-700">Go</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Show Line Numbers */}
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="showLineNumbers"
-                checked={showLineNumbers}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setShowLineNumbers(e.target.checked)}
-                className="rounded border-gray-700 bg-gray-800 text-primary focus:ring-primary"
-              />
-              <Label htmlFor="showLineNumbers" className="text-sm text-gray-100">
-                Show Line Numbers
-              </Label>
-            </div>
-
-            {/* Gradient Background Options */}
-            <div className="space-y-2">
-              <Label className="text-xs font-medium text-muted-foreground">
-                Background Style
-              </Label>
-              <GradientSelector
-                backgroundType={backgroundType}
-                setBackgroundType={setBackgroundType}
-                selectedGradient={selectedGradient}
-                setSelectedGradient={setSelectedGradient}
-                customGradient={customGradient}
-                setCustomGradient={setCustomGradient}
-                gradientAngle={gradientAngle}
-                setGradientAngle={setGradientAngle}
-              />
-            </div>
-
-            {/* Watermark Text */}
-            <div className="space-y-2">
-              <Label htmlFor="watermark" className="text-xs font-medium text-muted-foreground">
-                Watermark Text
-              </Label>
-              <Input
-                id="watermark"
-                value={watermark}
-                onChange={(e) => setWatermark(e.target.value)}
-                placeholder="@yourhandle or yoursite.com"
-                className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
-              />
-            </div>
-
-            {/* Watermark Opacity */}
-            {watermark && (
-              <div className="space-y-2">
-                <Label htmlFor="watermarkOpacity" className="text-xs font-medium text-muted-foreground">
-                  Opacity: {Math.round(watermarkOpacity * 100)}%
-                </Label>
-                <Slider
-                  id="watermarkOpacity"
-                  min={0.1}
-                  max={1}
-                  step={0.1}
-                  value={[watermarkOpacity]}
-                  onValueChange={(value) => setWatermarkOpacity(value[0])}
-                  className="py-2"
-                />
-              </div>
-            )}
-
-          </div>
+        {/* Sidebar (Desktop) */}
+        <aside className={`${sidebarOpen ? 'w-80' : 'w-0'} hidden md:block transition-all duration-200 bg-card/50 backdrop-blur-sm overflow-hidden border-gray-800 border-l`}>
+          <ControlsPanel selectedLanguage={selectedLanguage} onSelectedLanguageChange={setSelectedLanguage} />
         </aside>
+
+        {/* Mobile Settings Bottom Sheet */}
+        {sidebarOpen && (
+          <div className="md:hidden fixed inset-0 z-50">
+            <div
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <div className="absolute inset-x-0 bottom-0 max-h-[85vh] rounded-t-2xl border-t border-gray-800 bg-card shadow-2xl">
+              <div className="flex items-center justify-between p-4 border-b border-gray-800">
+                <span className="text-sm font-medium text-muted-foreground">Settings</span>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="p-2 rounded-md bg-gray-800/60 border border-gray-700 hover:bg-gray-700"
+                  aria-label="Close settings"
+                >
+                  <X className="w-4 h-4 text-gray-200" />
+                </button>
+              </div>
+              <ControlsPanel selectedLanguage={selectedLanguage} onSelectedLanguageChange={setSelectedLanguage} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
