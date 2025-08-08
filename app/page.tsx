@@ -223,14 +223,7 @@ export default function CodeImageGenerator() {
             {/* Canvas Header */}
             <div className=" absolute top-2 right-2 z-10">
               <div className="hidden md:flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSidebarOpen(!sidebarOpen)}
-                  className="p-2"
-                >
-                  <Settings className="w-4 h-4" />
-                </Button>
+                {/* Settings button removed for desktop view */}
               </div>
             </div>
 
