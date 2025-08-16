@@ -52,17 +52,12 @@ function createBackgroundStyle(
         backgroundColor: 'transparent',
       };
     case 'image':
-      if (backgroundImage) {
-        return {
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: backgroundImageSize,
-          backgroundPosition: backgroundImagePosition,
-          backgroundRepeat: 'repeat',
-          backgroundColor: backgroundColor, // Fallback color
-          position: 'relative',
-        } as React.CSSProperties;
-      }
-      return { backgroundColor };
+      // For images, we only set the fallback color here
+      // The actual image will be rendered as an overlay for opacity control
+      return { 
+        backgroundColor: backgroundColor,
+        position: 'relative',
+      };
     case 'solid':
     default:
       return { backgroundColor };
@@ -352,7 +347,7 @@ export default function CodeImageGenerator() {
                           backgroundPosition: backgroundImagePosition,
                           backgroundRepeat: 'repeat',
                           opacity: backgroundImageOpacity,
-                          zIndex: 0,
+                          zIndex: 1,
                         }}
                       />
                     )}
