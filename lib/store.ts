@@ -20,8 +20,8 @@ interface CodeImageState {
   setWatermark: (watermark: string) => void;
   watermarkOpacity: number;
   setWatermarkOpacity: (opacity: number) => void;
-  backgroundType: 'solid' | 'gradient';
-  setBackgroundType: (type: 'solid' | 'gradient') => void;
+  backgroundType: 'solid' | 'gradient' | 'image';
+  setBackgroundType: (type: 'solid' | 'gradient' | 'image') => void;
   selectedGradient: string;
   setSelectedGradient: (gradient: string) => void;
   customGradient: string;
@@ -30,6 +30,14 @@ interface CodeImageState {
   setGradientAngle: (angle: number) => void;
   backgroundColor: string;
   setBackgroundColor: (color: string) => void;
+  backgroundImage: string;
+  setBackgroundImage: (image: string) => void;
+  backgroundImageOpacity: number;
+  setBackgroundImageOpacity: (opacity: number) => void;
+  backgroundImageSize: 'cover' | 'contain' | 'auto';
+  setBackgroundImageSize: (size: 'cover' | 'contain' | 'auto') => void;
+  backgroundImagePosition: string;
+  setBackgroundImagePosition: (position: string) => void;
 }
 
 export const useCodeImageStore = create<CodeImageState>((set) => ({
@@ -50,7 +58,7 @@ export const useCodeImageStore = create<CodeImageState>((set) => ({
   watermarkOpacity: 0.5,
   setWatermarkOpacity: (opacity) => set({ watermarkOpacity: opacity }),
   backgroundType: 'solid',
-  setBackgroundType: (type: 'solid' | 'gradient') => set({ backgroundType: type }),
+  setBackgroundType: (type: 'solid' | 'gradient' | 'image') => set({ backgroundType: type }),
   selectedGradient: 'ocean',
   setSelectedGradient: (gradient: string) => set({ selectedGradient: gradient }),
   customGradient: '',
@@ -59,4 +67,12 @@ export const useCodeImageStore = create<CodeImageState>((set) => ({
   setGradientAngle: (angle: number) => set({ gradientAngle: angle }),
   backgroundColor: '#374151',
   setBackgroundColor: (color: string) => set({ backgroundColor: color }),
+  backgroundImage: '',
+  setBackgroundImage: (image: string) => set({ backgroundImage: image }),
+  backgroundImageOpacity: 1,
+  setBackgroundImageOpacity: (opacity: number) => set({ backgroundImageOpacity: opacity }),
+  backgroundImageSize: 'cover',
+  setBackgroundImageSize: (size: 'cover' | 'contain' | 'auto') => set({ backgroundImageSize: size }),
+  backgroundImagePosition: 'center',
+  setBackgroundImagePosition: (position: string) => set({ backgroundImagePosition: position }),
 }));
