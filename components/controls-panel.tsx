@@ -214,7 +214,6 @@ export function ControlsPanel({ selectedLanguage, onSelectedLanguageChange }: Co
                       title={color.name}
                       aria-label={`Select ${color.name} background color`}
                     />
-                    <span className="text-xs text-gray-500 text-center leading-3">{color.name}</span>
                   </div>
                 ))}
               </div>

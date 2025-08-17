@@ -59,7 +59,6 @@ export function GradientSelector({
                   style={{ background: getGradientPreview(preset.id) }}
                   title={preset.name}
                 />
-                <span className="text-xs text-gray-500 text-center leading-3">{preset.name}</span>
               </div>
             ))}
           </div>
