@@ -2,11 +2,9 @@
 
 import * as React from "react";
 import { Button } from './button';
-import { Input } from './input';
 import { Label } from './label';
 import { Slider } from './slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
-import { backgroundPresets, getBackgroundPresetsByCategory } from '@/lib/background-presets';
 import { Upload, X } from 'lucide-react';
 
 interface BackgroundImageSelectorProps {
@@ -34,7 +32,6 @@ export function BackgroundImageSelector({
   backgroundImagePosition,
   setBackgroundImagePosition,
 }: BackgroundImageSelectorProps) {
-  const [activeCategory, setActiveCategory] = React.useState<string>('geometric');
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,13 +53,11 @@ export function BackgroundImageSelector({
     }
   };
 
-  const categories = ['geometric', 'organic', 'tech', 'abstract'];
-
   return (
     <div className="space-y-3">
       {/* Upload Section */}
       <div className="space-y-2">
-        <Label className="text-xs font-medium text-muted-foreground">Upload Image</Label>
+        <Label className="text-xs font-medium text-muted-foreground">Upload Background Image</Label>
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
@@ -71,9 +66,9 @@ export function BackgroundImageSelector({
             className="flex items-center gap-2 text-xs h-8"
           >
             <Upload className="w-3 h-3" />
-            Choose File
+            Choose Image
           </Button>
-          {backgroundImage && !backgroundImage.startsWith('data:image/svg+xml') && (
+          {backgroundImage && (
             <Button
               variant="ghost"
               size="sm"
@@ -81,6 +76,7 @@ export function BackgroundImageSelector({
               className="text-xs h-8 px-2"
             >
               <X className="w-3 h-3" />
+              Remove
             </Button>
           )}
         </div>
@@ -91,50 +87,9 @@ export function BackgroundImageSelector({
           onChange={handleFileUpload}
           className="hidden"
         />
-      </div>
-
-      {/* Pattern Presets */}
-      <div className="space-y-2">
-        <Label className="text-xs font-medium text-muted-foreground">Pattern Presets</Label>
-        
-        {/* Category Tabs */}
-        <div className="flex gap-1 mb-2">
-          {categories.map((category) => (
-            <Button
-              key={category}
-              variant={activeCategory === category ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveCategory(category)}
-              className="text-xs h-6 px-2 capitalize"
-            >
-              {category}
-            </Button>
-          ))}
-        </div>
-
-        {/* Pattern Grid */}
-        <div className="grid grid-cols-4 gap-2">
-          {getBackgroundPresetsByCategory(activeCategory).map((preset) => (
-            <div key={preset.id} className="flex flex-col items-center gap-1">
-              <button
-                onClick={() => setBackgroundImage(preset.url)}
-                className={`w-12 h-12 rounded border transition-all ${
-                  backgroundImage === preset.url
-                    ? 'border-primary ring-1 ring-primary'
-                    : 'border-gray-600 hover:border-gray-500'
-                }`}
-                style={{ 
-                  backgroundImage: `url(${preset.url})`,
-                  backgroundColor: '#374151',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center'
-                }}
-                title={preset.name}
-              />
-              <span className="text-xs text-gray-500 text-center leading-3">{preset.name}</span>
-            </div>
-          ))}
-        </div>
+        <p className="text-xs text-muted-foreground">
+          Upload JPG, PNG, or SVG images for your background
+        </p>
       </div>
 
       {/* Image Controls */}
@@ -205,7 +160,7 @@ export function BackgroundImageSelector({
                 backgroundImage: `url(${backgroundImage})`,
                 backgroundSize: backgroundImageSize,
                 backgroundPosition: backgroundImagePosition,
-                backgroundRepeat: 'repeat',
+                backgroundRepeat: 'no-repeat',
                 opacity: backgroundImageOpacity,
               }}
             />
