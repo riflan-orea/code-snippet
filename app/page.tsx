@@ -33,6 +33,37 @@ function getLanguageExtension(language: 'javascript' | 'html' | 'go') {
   }
 }
 
+// Helper function to create background style
+function createBackgroundStyle(
+  backgroundType: 'solid' | 'gradient' | 'image',
+  backgroundColor: string,
+  selectedGradient: string,
+  gradientAngle: number,
+  customGradient: string,
+  backgroundImage: string,
+  backgroundImageOpacity: number,
+  backgroundImageSize: 'cover' | 'contain' | 'auto',
+  backgroundImagePosition: string
+): React.CSSProperties {
+  switch (backgroundType) {
+    case 'gradient':
+      return {
+        background: createGradientCSS(selectedGradient, gradientAngle, customGradient),
+        backgroundColor: 'transparent',
+      };
+    case 'image':
+      // For images, we only set the fallback color here
+      // The actual image will be rendered as an overlay for opacity control
+      return { 
+        backgroundColor: backgroundColor,
+        position: 'relative',
+      };
+    case 'solid':
+    default:
+      return { backgroundColor };
+  }
+}
+
 export default function CodeImageGenerator() {
   const {
     code,
@@ -57,6 +88,14 @@ export default function CodeImageGenerator() {
     setGradientAngle,
     backgroundColor,
     setBackgroundColor,
+    backgroundImage,
+    setBackgroundImage,
+    backgroundImageOpacity,
+    setBackgroundImageOpacity,
+    backgroundImageSize,
+    setBackgroundImageSize,
+    backgroundImagePosition,
+    setBackgroundImagePosition,
   } = useCodeImageStore();
   const previewRef = useRef<HTMLDivElement>(null);
   const editorFrameType = "vscode";
@@ -122,12 +161,42 @@ export default function CodeImageGenerator() {
 
       // Set border radius to 0 for export
       cloneContainer.style.borderRadius = "0px";
-      // Set background to match preview (gradient or solid)
-      const backgroundStyle = backgroundType === 'gradient' 
-        ? createGradientCSS(selectedGradient, gradientAngle, customGradient)
-        : backgroundColor;
-      cloneContainer.style.background = backgroundStyle;
-      cloneContainer.style.backgroundColor = backgroundType === 'gradient' ? 'transparent' : backgroundColor;
+      
+      // Set background to match preview
+      const backgroundStyle = createBackgroundStyle(
+        backgroundType,
+        backgroundColor,
+        selectedGradient,
+        gradientAngle,
+        customGradient,
+        backgroundImage,
+        backgroundImageOpacity,
+        backgroundImageSize,
+        backgroundImagePosition
+      );
+      
+      Object.assign(cloneContainer.style, backgroundStyle);
+      
+      // Handle image background opacity
+      if (backgroundType === 'image' && backgroundImage) {
+        // Create a pseudo-element overlay for opacity
+        const overlay = document.createElement('div');
+        overlay.style.position = 'absolute';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.right = '0';
+        overlay.style.bottom = '0';
+        overlay.style.backgroundImage = `url(${backgroundImage})`;
+        overlay.style.backgroundSize = backgroundImageSize;
+        overlay.style.backgroundPosition = backgroundImagePosition;
+        overlay.style.backgroundRepeat = 'repeat';
+        overlay.style.opacity = backgroundImageOpacity.toString();
+        overlay.style.pointerEvents = 'none';
+        overlay.style.zIndex = '-1';
+        cloneContainer.style.position = 'relative';
+        cloneContainer.insertBefore(overlay, cloneContainer.firstChild);
+      }
+      
       // Add extra bottom padding to the code area for screenshot
       const cmContent = cloneContainer.querySelector('.cm-content');
       if (cmContent) {
@@ -185,6 +254,19 @@ export default function CodeImageGenerator() {
     }
   };
 
+  // Create the main background style
+  const mainBackgroundStyle = createBackgroundStyle(
+    backgroundType,
+    backgroundColor,
+    selectedGradient,
+    gradientAngle,
+    customGradient,
+    backgroundImage,
+    backgroundImageOpacity,
+    backgroundImageSize,
+    backgroundImagePosition
+  );
+
   return (
     <div className="h-screen flex flex-col overflow-hidden" >
       {/* Top Bar */}
@@ -237,92 +319,105 @@ export default function CodeImageGenerator() {
                   <div
                     ref={previewRef}
                     className="overflow-hidden rounded-xl bg-gray-900 relative mx-auto shadow-2xl max-w-full"
-                    style={
-                      {
-                        width: `${estimatedWidth}px`,
-                        minHeight: "120px",
-                        maxHeight: `${carbonMaxHeight}px`,
-                        padding: `${carbonPadding}px`,
-                        background: backgroundType === 'gradient' 
-                          ? createGradientCSS(selectedGradient, gradientAngle, customGradient)
-                          : backgroundColor,
-                        "--background": backgroundColor,
-                        "--foreground": "#f9fafb",
-                        "--card": backgroundColor,
-                        "--card-foreground": "#f9fafb",
-                        "--popover": backgroundColor,
-                        "--popover-foreground": "#f9fafb",
-                        "--primary": "#4F46E5",
-                        "--primary-foreground": "#fff",
-                        "--border": "#22223b",
-                        "--input": "#22223b",
-                      } as React.CSSProperties
-                    }
+                    style={{
+                      width: `${estimatedWidth}px`,
+                      minHeight: "120px",
+                      maxHeight: `${carbonMaxHeight}px`,
+                      padding: `${carbonPadding}px`,
+                      ...mainBackgroundStyle,
+                      "--background": backgroundColor,
+                      "--foreground": "#f9fafb",
+                      "--card": backgroundColor,
+                      "--card-foreground": "#f9fafb",
+                      "--popover": backgroundColor,
+                      "--popover-foreground": "#f9fafb",
+                      "--primary": "#4F46E5",
+                      "--primary-foreground": "#fff",
+                      "--border": "#22223b",
+                      "--input": "#22223b",
+                    } as React.CSSProperties}
                   >
-                    {displayTitle && (
+                    {/* Background image overlay for opacity control */}
+                    {backgroundType === 'image' && backgroundImage && (
                       <div
-                        className="mb-4 font-medium text-white text-center"
-                        style={{ fontSize: `${fontSize + 2}px` }}
-                      >
-                        {displayTitle}
-                      </div>
-                    )}
-                    <div>
-                      <EditorFrame
-                        type={editorFrameType}
-                        theme={editorFrameTheme}
-                        title={title}
-                        showControls={showControls}
-                      >
-                        <div
-                          className="rounded-md overflow-hidden"
-                          style={{ fontSize: `${fontSize}px` }}
-                        >
-                          <div style={{ backgroundColor: "#282c34" }}>
-                            <CodeMirror
-                              value={code}
-                              extensions={[getLanguageExtension(selectedLanguage)]}
-                              theme={vscodeDark}
-                              onChange={handleCodeChange}
-                              basicSetup={{
-                                lineNumbers: showLineNumbers,
-                                highlightActiveLineGutter: false,
-                                highlightSpecialChars: true,
-                                foldGutter: false,
-                                dropCursor: false,
-                                allowMultipleSelections: false,
-                                indentOnInput: false,
-                                syntaxHighlighting: true,
-                                bracketMatching: false,
-                                closeBrackets: false,
-                                autocompletion: false,
-                                rectangularSelection: false,
-                                crosshairCursor: false,
-                                highlightActiveLine: false,
-                                highlightSelectionMatches: false,
-                                closeBracketsKeymap: false,
-                                searchKeymap: false,
-                                foldKeymap: false,
-                                completionKeymap: false,
-                                lintKeymap: false,
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </EditorFrame>
-                    </div>
-                    {watermark && (
-                      <div
-                        className="absolute bottom-2 right-4 font-medium text-white"
+                        className="absolute inset-0 pointer-events-none"
                         style={{
-                          opacity: watermarkOpacity,
-                          fontSize: `${fontSize * 0.8}px`,
-                          textShadow: "1px 1px 2px rgba(0,0,0,0.7)",
+                          backgroundImage: `url(${backgroundImage})`,
+                          backgroundSize: backgroundImageSize,
+                          backgroundPosition: backgroundImagePosition,
+                          backgroundRepeat: 'repeat',
+                          opacity: backgroundImageOpacity,
+                          zIndex: 1,
                         }}
-                      >
-                        {watermark}
-                      </div>
+                      />
                     )}
+                    
+                    <div className="relative z-10">
+                      {displayTitle && (
+                        <div
+                          className="mb-4 font-medium text-white text-center"
+                          style={{ fontSize: `${fontSize + 2}px` }}
+                        >
+                          {displayTitle}
+                        </div>
+                      )}
+                      <div>
+                        <EditorFrame
+                          type={editorFrameType}
+                          theme={editorFrameTheme}
+                          title={title}
+                          showControls={showControls}
+                        >
+                          <div
+                            className="rounded-md overflow-hidden"
+                            style={{ fontSize: `${fontSize}px` }}
+                          >
+                            <div style={{ backgroundColor: "#282c34" }}>
+                              <CodeMirror
+                                value={code}
+                                extensions={[getLanguageExtension(selectedLanguage)]}
+                                theme={vscodeDark}
+                                onChange={handleCodeChange}
+                                basicSetup={{
+                                  lineNumbers: showLineNumbers,
+                                  highlightActiveLineGutter: false,
+                                  highlightSpecialChars: true,
+                                  foldGutter: false,
+                                  dropCursor: false,
+                                  allowMultipleSelections: false,
+                                  indentOnInput: false,
+                                  syntaxHighlighting: true,
+                                  bracketMatching: false,
+                                  closeBrackets: false,
+                                  autocompletion: false,
+                                  rectangularSelection: false,
+                                  crosshairCursor: false,
+                                  highlightActiveLine: false,
+                                  highlightSelectionMatches: false,
+                                  closeBracketsKeymap: false,
+                                  searchKeymap: false,
+                                  foldKeymap: false,
+                                  completionKeymap: false,
+                                  lintKeymap: false,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </EditorFrame>
+                      </div>
+                      {watermark && (
+                        <div
+                          className="absolute bottom-2 right-4 font-medium text-white z-20"
+                          style={{
+                            opacity: watermarkOpacity,
+                            fontSize: `${fontSize * 0.8}px`,
+                            textShadow: "1px 1px 2px rgba(0,0,0,0.7)",
+                          }}
+                        >
+                          {watermark}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

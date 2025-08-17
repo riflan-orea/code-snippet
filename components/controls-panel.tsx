@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { Slider } from "@/components/ui/slider";
 import { GradientSelector } from "@/components/ui/gradient-selector";
+import { ColorPicker } from "@/components/ui/color-picker";
+import { BackgroundImageSelector } from "@/components/ui/background-image-selector";
 import { useCodeImageStore } from "@/lib/store";
 
 export type SupportedLanguage = 'javascript' | 'html' | 'go';
@@ -36,6 +38,14 @@ export function ControlsPanel({ selectedLanguage, onSelectedLanguageChange }: Co
     setGradientAngle,
     backgroundColor,
     setBackgroundColor,
+    backgroundImage,
+    setBackgroundImage,
+    backgroundImageOpacity,
+    setBackgroundImageOpacity,
+    backgroundImageSize,
+    setBackgroundImageSize,
+    backgroundImagePosition,
+    setBackgroundImagePosition,
   } = useCodeImageStore();
 
   return (
@@ -114,74 +124,158 @@ export function ControlsPanel({ selectedLanguage, onSelectedLanguageChange }: Co
         </Label>
       </div>
 
-      {/* Background Color */}
-      <div className="space-y-2">
-        <Label htmlFor="backgroundColor" className="text-xs font-medium text-muted-foreground">
-          Background Color
-        </Label>
-        <div className="grid grid-cols-6 gap-1">
-          {[
-            { name: 'Slate', value: '#1e293b' },
-            { name: 'Gray', value: '#374151' },
-            { name: 'Zinc', value: '#3f3f46' },
-            { name: 'Neutral', value: '#52525b' },
-            { name: 'Stone', value: '#57534e' },
-            { name: 'Red', value: '#7f1d1d' },
-            { name: 'Orange', value: '#9a3412' },
-            { name: 'Amber', value: '#92400e' },
-            { name: 'Yellow', value: '#a16207' },
-            { name: 'Lime', value: '#3f6212' },
-            { name: 'Green', value: '#14532d' },
-            { name: 'Emerald', value: '#064e3b' },
-            { name: 'Teal', value: '#134e4a' },
-            { name: 'Cyan', value: '#164e63' },
-            { name: 'Sky', value: '#0c4a6e' },
-            { name: 'Blue', value: '#1e3a8a' },
-            { name: 'Indigo', value: '#312e81' },
-            { name: 'Violet', value: '#4c1d95' },
-            { name: 'Purple', value: '#581c87' },
-            { name: 'Fuchsia', value: '#701a75' },
-            { name: 'Pink', value: '#831843' },
-            { name: 'Rose', value: '#9f1239' },
-          ].map((color) => (
-            <div key={color.value} className="flex flex-col items-center gap-1">
-              <button
-                onClick={() => setBackgroundColor(color.value)}
-                className={`w-8 h-8 rounded border transition-all ${
-                  backgroundColor === color.value
-                    ? 'border-primary ring-1 ring-primary'
-                    : 'border-gray-600 hover:border-gray-500'
-                }`}
-                style={{ backgroundColor: color.value }}
-                title={color.name}
-                aria-label={`Select ${color.name} background color`}
-              />
-              <span className="text-xs text-gray-500 text-center leading-3">{color.name}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Gradient Background Options */}
-      <div className="space-y-2">
+      {/* Background Section */}
+      <div className="space-y-4">
         <Label className="text-xs font-medium text-muted-foreground">
-          Background Style
+          Background Settings
         </Label>
-        <GradientSelector
-          backgroundType={backgroundType}
-          setBackgroundType={setBackgroundType}
-          selectedGradient={selectedGradient}
-          setSelectedGradient={setSelectedGradient}
-          customGradient={customGradient}
-          setCustomGradient={setCustomGradient}
-          gradientAngle={gradientAngle}
-          setGradientAngle={setGradientAngle}
-        />
+
+        {/* Background Type Selector */}
+        <div className="space-y-2">
+          <Label className="text-xs font-medium text-muted-foreground">
+            Background Type
+          </Label>
+          <div className="grid grid-cols-3 gap-1">
+            <button
+              onClick={() => setBackgroundType('solid')}
+              className={`px-3 py-2 text-xs rounded border transition-all ${
+                backgroundType === 'solid'
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-gray-600 text-gray-300 hover:border-gray-500'
+              }`}
+            >
+              Solid
+            </button>
+            <button
+              onClick={() => setBackgroundType('gradient')}
+              className={`px-3 py-2 text-xs rounded border transition-all ${
+                backgroundType === 'gradient'
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-gray-600 text-gray-300 hover:border-gray-500'
+              }`}
+            >
+              Gradient
+            </button>
+            <button
+              onClick={() => setBackgroundType('image')}
+              className={`px-3 py-2 text-xs rounded border transition-all ${
+                backgroundType === 'image'
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-gray-600 text-gray-300 hover:border-gray-500'
+              }`}
+            >
+              Image
+            </button>
+          </div>
+        </div>
+
+        {/* Solid Color Options */}
+        {backgroundType === 'solid' && (
+          <div className="space-y-3">
+            {/* Preset Colors */}
+            <div className="space-y-2">
+              <Label className="text-xs font-medium text-muted-foreground">
+                Preset Colors
+              </Label>
+              <div className="grid grid-cols-6 gap-1">
+                {[
+                  { name: 'Slate', value: '#1e293b' },
+                  { name: 'Gray', value: '#374151' },
+                  { name: 'Zinc', value: '#3f3f46' },
+                  { name: 'Neutral', value: '#52525b' },
+                  { name: 'Stone', value: '#57534e' },
+                  { name: 'Red', value: '#7f1d1d' },
+                  { name: 'Orange', value: '#9a3412' },
+                  { name: 'Amber', value: '#92400e' },
+                  { name: 'Yellow', value: '#a16207' },
+                  { name: 'Lime', value: '#3f6212' },
+                  { name: 'Green', value: '#14532d' },
+                  { name: 'Emerald', value: '#064e3b' },
+                  { name: 'Teal', value: '#134e4a' },
+                  { name: 'Cyan', value: '#164e63' },
+                  { name: 'Sky', value: '#0c4a6e' },
+                  { name: 'Blue', value: '#1e3a8a' },
+                  { name: 'Indigo', value: '#312e81' },
+                  { name: 'Violet', value: '#4c1d95' },
+                  { name: 'Purple', value: '#581c87' },
+                  { name: 'Fuchsia', value: '#701a75' },
+                  { name: 'Pink', value: '#831843' },
+                  { name: 'Rose', value: '#9f1239' },
+                ].map((color) => (
+                  <div key={color.value} className="flex flex-col items-center gap-1">
+                    <button
+                      onClick={() => setBackgroundColor(color.value)}
+                      className={`w-8 h-8 rounded border transition-all ${
+                        backgroundColor === color.value
+                          ? 'border-primary ring-1 ring-primary'
+                          : 'border-gray-600 hover:border-gray-500'
+                      }`}
+                      style={{ backgroundColor: color.value }}
+                      title={color.name}
+                      aria-label={`Select ${color.name} background color`}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Custom Color Picker */}
+            <ColorPicker
+              value={backgroundColor}
+              onChange={setBackgroundColor}
+              label="Custom Color"
+            />
+          </div>
+        )}
+
+        {/* Gradient Background Options */}
+        {backgroundType === 'gradient' && (
+          <GradientSelector
+            backgroundType={backgroundType}
+            setBackgroundType={setBackgroundType}
+            selectedGradient={selectedGradient}
+            setSelectedGradient={setSelectedGradient}
+            customGradient={customGradient}
+            setCustomGradient={setCustomGradient}
+            gradientAngle={gradientAngle}
+            setGradientAngle={setGradientAngle}
+          />
+        )}
+
+        {/* Background Image Options */}
+        {backgroundType === 'image' && (
+          <BackgroundImageSelector
+            backgroundType={backgroundType}
+            setBackgroundType={setBackgroundType}
+            backgroundImage={backgroundImage}
+            setBackgroundImage={setBackgroundImage}
+            backgroundImageOpacity={backgroundImageOpacity}
+            setBackgroundImageOpacity={setBackgroundImageOpacity}
+            backgroundImageSize={backgroundImageSize}
+            setBackgroundImageSize={setBackgroundImageSize}
+            backgroundImagePosition={backgroundImagePosition}
+            setBackgroundImagePosition={setBackgroundImagePosition}
+          />
+        )}
       </div>
 
-      
-
-     
+      {/* Watermark Opacity */}
+      {watermark && (
+        <div className="space-y-2">
+          <Label htmlFor="watermarkOpacity" className="text-xs font-medium text-muted-foreground">
+            Watermark Opacity: {Math.round(watermarkOpacity * 100)}%
+          </Label>
+          <Slider
+            id="watermarkOpacity"
+            min={0}
+            max={1}
+            step={0.1}
+            value={[watermarkOpacity]}
+            onValueChange={(value) => setWatermarkOpacity(value[0])}
+            className="py-1"
+          />
+        </div>
+      )}
     </div>
   );
 }
