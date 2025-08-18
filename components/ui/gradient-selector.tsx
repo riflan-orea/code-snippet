@@ -2,10 +2,11 @@
 
 import * as React from "react";
 import { Button } from './button';
-import { Input } from './input';
 import { Label } from './label';
 import { Slider } from './slider';
+import { GradientBuilder } from './gradient-builder';
 import { gradientPresets, createGradientCSS, getGradientPreview } from '@/lib/gradients';
+import { Palette, Wand2 } from 'lucide-react';
 
 interface GradientSelectorProps {
   backgroundType: 'solid' | 'gradient' | 'image';
@@ -34,75 +35,87 @@ export function GradientSelector({
     <div className="space-y-3">
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label className="text-xs font-medium text-muted-foreground">Presets</Label>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowCustomGradient(!showCustomGradient)}
-            className="text-xs h-6 px-2"
-          >
-            {showCustomGradient ? 'Presets' : 'Custom'}
-          </Button>
+          <Label className="text-xs font-medium text-muted-foreground">
+            {showCustomGradient ? 'Custom Builder' : 'Presets'}
+          </Label>
+          <div className="flex gap-1">
+            <Button
+              variant={!showCustomGradient ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setShowCustomGradient(false)}
+              className="text-xs h-6 px-2"
+              title="Use preset gradients"
+            >
+              <Palette className="h-3 w-3 mr-1" />
+              Presets
+            </Button>
+            <Button
+              variant={showCustomGradient ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setShowCustomGradient(true)}
+              className="text-xs h-6 px-2"
+              title="Build custom gradient"
+            >
+              <Wand2 className="h-3 w-3 mr-1" />
+              Builder
+            </Button>
+          </div>
         </div>
 
         {!showCustomGradient && (
-          <div className="grid grid-cols-6 gap-1">
-            {gradientPresets.map((preset) => (
-              <div key={preset.id} className="flex flex-col items-center gap-1">
-                <button
-                  onClick={() => setSelectedGradient(preset.id)}
-                  className={`w-8 h-8 rounded border transition-all ${
-                    selectedGradient === preset.id
-                      ? 'border-primary ring-1 ring-primary'
-                      : 'border-gray-600 hover:border-gray-500'
-                  }`}
-                  style={{ background: getGradientPreview(preset.id) }}
-                  title={preset.name}
-                />
-              </div>
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-6 gap-1">
+              {gradientPresets.map((preset) => (
+                <div key={preset.id} className="flex flex-col items-center gap-1">
+                  <button
+                    onClick={() => setSelectedGradient(preset.id)}
+                    className={`w-8 h-8 rounded border transition-all ${
+                      selectedGradient === preset.id
+                        ? 'border-primary ring-1 ring-primary'
+                        : 'border-gray-600 hover:border-gray-500'
+                    }`}
+                    style={{ background: getGradientPreview(preset.id) }}
+                    title={preset.name}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="gradient-angle" className="text-xs font-medium text-muted-foreground">
+                Angle: {gradientAngle}°
+              </Label>
+              <Slider
+                id="gradient-angle"
+                min={0}
+                max={360}
+                step={1}
+                value={[gradientAngle]}
+                onValueChange={(value) => setGradientAngle(value[0])}
+                className="py-1"
+              />
+            </div>
+
+            <div className="p-2 rounded border border-gray-700 bg-gray-800/50">
+              <Label className="text-xs font-medium text-muted-foreground mb-1 block">Preview</Label>
+              <div
+                className="w-full h-12 rounded border border-gray-600"
+                style={{
+                  background: createGradientCSS(selectedGradient, gradientAngle, customGradient),
+                }}
+              />
+            </div>
+          </>
         )}
 
         {showCustomGradient && (
-          <div className="space-y-2">
-            <Label htmlFor="custom-gradient" className="text-xs font-medium text-muted-foreground">
-              Custom CSS
-            </Label>
-            <Input
-              id="custom-gradient"
-              value={customGradient}
-              onChange={(e) => setCustomGradient(e.target.value)}
-              placeholder="linear-gradient(45deg, #ff6b6b 0%, #4ecdc4 100%)"
-              className="font-mono text-xs bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-500"
-            />
-          </div>
+          <GradientBuilder
+            value={customGradient || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}
+            onChange={setCustomGradient}
+            angle={gradientAngle}
+            onAngleChange={setGradientAngle}
+          />
         )}
-
-        <div className="space-y-2">
-          <Label htmlFor="gradient-angle" className="text-xs font-medium text-muted-foreground">
-            Angle: {gradientAngle}°
-          </Label>
-          <Slider
-            id="gradient-angle"
-            min={0}
-            max={360}
-            step={1}
-            value={[gradientAngle]}
-            onValueChange={(value) => setGradientAngle(value[0])}
-            className="py-1"
-          />
-        </div>
-
-        <div className="p-2 rounded border border-gray-700 bg-gray-800/50">
-          <Label className="text-xs font-medium text-muted-foreground mb-1 block">Preview</Label>
-          <div
-            className="w-full h-12 rounded border border-gray-600"
-            style={{
-              background: createGradientCSS(selectedGradient, gradientAngle, customGradient),
-            }}
-          />
-        </div>
       </div>
     </div>
   );
