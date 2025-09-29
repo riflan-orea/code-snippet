@@ -605,7 +605,7 @@ func main() {
                           <EditorFrame
                             type={editorFrameType}
                             theme={editorFrameTheme}
-                            title={layoutMode === 'column' ? `${leftTitle} (${leftLanguage.toUpperCase()})` : leftTitle}
+                            title={leftTitle}
                             showControls={showControls}
                           >
                             <div
