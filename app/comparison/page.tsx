@@ -23,6 +23,7 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { Slider } from "@/components/ui/slider";
 import { GradientSelector } from "@/components/ui/gradient-selector";
 import { ColorPicker } from "@/components/ui/color-picker";
@@ -324,44 +325,75 @@ export default function CodeComparison() {
   const showControls = true;
 
   // State for left and right code snippets
-  const [leftCode, setLeftCode] = useState(`// Erlang
--module(hello_module).
--export([some_fun/0, some_fun/1]).
+  const [leftCode, setLeftCode] = useState(`// JavaScript Example
+function fibonacci(n) {
+  if (n <= 1) return n;
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}
 
-% A "Hello world" function
-some_fun() ->
-    io:format("~s~n", ["Hello world!"]).
+// Array methods and async/await
+async function processNumbers(numbers) {
+  const results = await Promise.all(
+    numbers.map(async (num) => {
+      return await fibonacci(num);
+    })
+  );
+  return results.filter(result => result > 10);
+}
 
-% This one works only with Lists
-some_fun(List) when is_list(List) ->
-    io:format("~s~n", List).
+console.log(processNumbers([5, 6, 7, 8]));`);
 
-% Non-exported functions are private
-priv() ->
-    secret_info.`);
+  const [rightCode, setRightCode] = useState(`// Go Example
+package main
 
-  const [rightCode, setRightCode] = useState(`# Elixir
-defmodule Hello do
-  # A "Hello world" function
-  def some_fun do
-    IO.puts "Hello world!"
-  end
+import (
+	"fmt"
+	"sync"
+)
 
-  # This one works only with Lists
-  def some_fun(list) when is_list(list) do
-    IO.inspect list
-  end
+func fibonacci(n int) int {
+	if n <= 1 {
+		return n
+	}
+	return fibonacci(n-1) + fibonacci(n-2)
+}
 
-  # A private function
-  defp priv do
-    :secret_info
-  end
-end`);
+// Goroutines and channels
+func processNumbers(numbers []int) []int {
+	var wg sync.WaitGroup
+	results := make(chan int, len(numbers))
+	
+	for _, num := range numbers {
+		wg.Add(1)
+		go func(n int) {
+			defer wg.Done()
+			results <- fibonacci(n)
+		}(num)
+	}
+	
+	go func() {
+		wg.Wait()
+		close(results)
+	}()
+	
+	var filtered []int
+	for result := range results {
+		if result > 10 {
+			filtered = append(filtered, result)
+		}
+	}
+	return filtered
+}
 
-  const [leftTitle, setLeftTitle] = useState("Erlang");
-  const [rightTitle, setRightTitle] = useState("Elixir");
+func main() {
+	numbers := []int{5, 6, 7, 8}
+	fmt.Println(processNumbers(numbers))
+}`);
+
+  const [leftTitle, setLeftTitle] = useState("JavaScript");
+  const [rightTitle, setRightTitle] = useState("Go");
   const [leftLanguage, setLeftLanguage] = useState<SupportedLanguage>('javascript');
-  const [rightLanguage, setRightLanguage] = useState<SupportedLanguage>('javascript');
+  const [rightLanguage, setRightLanguage] = useState<SupportedLanguage>('go');
 
   // Debounce for code editors
   const debouncedSetLeftCode = debounce((value: string) => setLeftCode(value), 300);
@@ -713,52 +745,62 @@ end`);
                 
                 <div className="space-y-3">
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">Left Language</label>
-                    <select
-                      value={leftLanguage}
-                      onChange={(e) => setLeftLanguage(e.target.value as SupportedLanguage)}
-                      className="text-sm bg-gray-800 border-gray-700 text-gray-100"
-                    >
-                      <option value="javascript">JavaScript</option>
-                      <option value="html">HTML</option>
-                      <option value="go">Go</option>
-                    </select>
+                    <Label htmlFor="leftLanguage" className="text-xs font-medium text-muted-foreground">
+                      Left Language
+                    </Label>
+                    <Select value={leftLanguage} onValueChange={(value) => setLeftLanguage(value as SupportedLanguage)}>
+                      <SelectTrigger id="leftLanguage" className="text-sm bg-gray-800 border-gray-700 text-gray-100">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-800 border-gray-700">
+                        <SelectItem value="javascript" className="text-gray-100 hover:bg-gray-700">JavaScript</SelectItem>
+                        <SelectItem value="html" className="text-gray-100 hover:bg-gray-700">HTML</SelectItem>
+                        <SelectItem value="go" className="text-gray-100 hover:bg-gray-700">Go</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">Right Language</label>
-                    <select
-                      value={rightLanguage}
-                      onChange={(e) => setRightLanguage(e.target.value as SupportedLanguage)}
-                      className="text-sm bg-gray-800 border-gray-700 text-gray-100"
-                    >
-                      <option value="javascript">JavaScript</option>
-                      <option value="html">HTML</option>
-                      <option value="go">Go</option>
-                    </select>
+                    <Label htmlFor="rightLanguage" className="text-xs font-medium text-muted-foreground">
+                      Right Language
+                    </Label>
+                    <Select value={rightLanguage} onValueChange={(value) => setRightLanguage(value as SupportedLanguage)}>
+                      <SelectTrigger id="rightLanguage" className="text-sm bg-gray-800 border-gray-700 text-gray-100">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-800 border-gray-700">
+                        <SelectItem value="javascript" className="text-gray-100 hover:bg-gray-700">JavaScript</SelectItem>
+                        <SelectItem value="html" className="text-gray-100 hover:bg-gray-700">HTML</SelectItem>
+                        <SelectItem value="go" className="text-gray-100 hover:bg-gray-700">Go</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
                 <div className="space-y-3">
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">Left Window Title</label>
-                    <input
-                      type="text"
+                    <Label htmlFor="leftTitle" className="text-xs font-medium text-muted-foreground">
+                      Left Window Title
+                    </Label>
+                    <Input
+                      id="leftTitle"
                       value={leftTitle}
                       onChange={(e) => setLeftTitle(e.target.value)}
-                      className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
                       placeholder="Left window title"
+                      className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
                     />
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">Right Window Title</label>
-                    <input
-                      type="text"
+                    <Label htmlFor="rightTitle" className="text-xs font-medium text-muted-foreground">
+                      Right Window Title
+                    </Label>
+                    <Input
+                      id="rightTitle"
                       value={rightTitle}
                       onChange={(e) => setRightTitle(e.target.value)}
-                      className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
                       placeholder="Right window title"
+                      className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
                     />
                   </div>
                 </div>
@@ -794,52 +836,62 @@ end`);
                   
                   <div className="space-y-3">
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-2 block">Left Language</label>
-                      <select
-                        value={leftLanguage}
-                        onChange={(e) => setLeftLanguage(e.target.value as SupportedLanguage)}
-                        className="text-sm bg-gray-800 border-gray-700 text-gray-100"
-                      >
-                        <option value="javascript">JavaScript</option>
-                        <option value="html">HTML</option>
-                        <option value="go">Go</option>
-                      </select>
+                      <Label htmlFor="leftLanguageMobile" className="text-xs font-medium text-muted-foreground">
+                        Left Language
+                      </Label>
+                      <Select value={leftLanguage} onValueChange={(value) => setLeftLanguage(value as SupportedLanguage)}>
+                        <SelectTrigger id="leftLanguageMobile" className="text-sm bg-gray-800 border-gray-700 text-gray-100">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-gray-800 border-gray-700">
+                          <SelectItem value="javascript" className="text-gray-100 hover:bg-gray-700">JavaScript</SelectItem>
+                          <SelectItem value="html" className="text-gray-100 hover:bg-gray-700">HTML</SelectItem>
+                          <SelectItem value="go" className="text-gray-100 hover:bg-gray-700">Go</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-2 block">Right Language</label>
-                      <select
-                        value={rightLanguage}
-                        onChange={(e) => setRightLanguage(e.target.value as SupportedLanguage)}
-                        className="text-sm bg-gray-800 border-gray-700 text-gray-100"
-                      >
-                        <option value="javascript">JavaScript</option>
-                        <option value="html">HTML</option>
-                        <option value="go">Go</option>
-                      </select>
+                      <Label htmlFor="rightLanguageMobile" className="text-xs font-medium text-muted-foreground">
+                        Right Language
+                      </Label>
+                      <Select value={rightLanguage} onValueChange={(value) => setRightLanguage(value as SupportedLanguage)}>
+                        <SelectTrigger id="rightLanguageMobile" className="text-sm bg-gray-800 border-gray-700 text-gray-100">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-gray-800 border-gray-700">
+                          <SelectItem value="javascript" className="text-gray-100 hover:bg-gray-700">JavaScript</SelectItem>
+                          <SelectItem value="html" className="text-gray-100 hover:bg-gray-700">HTML</SelectItem>
+                          <SelectItem value="go" className="text-gray-100 hover:bg-gray-700">Go</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
                   <div className="space-y-3">
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-2 block">Left Window Title</label>
-                      <input
-                        type="text"
+                      <Label htmlFor="leftTitleMobile" className="text-xs font-medium text-muted-foreground">
+                        Left Window Title
+                      </Label>
+                      <Input
+                        id="leftTitleMobile"
                         value={leftTitle}
                         onChange={(e) => setLeftTitle(e.target.value)}
-                        className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
                         placeholder="Left window title"
+                        className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
                       />
                     </div>
                     
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-2 block">Right Window Title</label>
-                      <input
-                        type="text"
+                      <Label htmlFor="rightTitleMobile" className="text-xs font-medium text-muted-foreground">
+                        Right Window Title
+                      </Label>
+                      <Input
+                        id="rightTitleMobile"
                         value={rightTitle}
                         onChange={(e) => setRightTitle(e.target.value)}
-                        className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
                         placeholder="Right window title"
+                        className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
                       />
                     </div>
                   </div>
