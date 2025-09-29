@@ -9,7 +9,7 @@ import { ColorPicker } from "@/components/ui/color-picker";
 import { BackgroundImageSelector } from "@/components/ui/background-image-selector";
 import { useCodeImageStore } from "@/lib/store";
 
-export type SupportedLanguage = 'javascript' | 'html' | 'go';
+export type SupportedLanguage = 'javascript' | 'html' | 'go' | 'java' | 'dart' | 'kotlin' | 'swift' | 'php';
 
 type ControlsPanelProps = {
   selectedLanguage: SupportedLanguage;
@@ -51,20 +51,6 @@ export function ControlsPanel({ selectedLanguage, onSelectedLanguageChange }: Co
   return (
     <div className="p-4 space-y-6 h-full overflow-y-auto">
 
-      {/* Watermark Text */}
-      <div className="space-y-2">
-        <Label htmlFor="watermark" className="text-xs font-medium text-muted-foreground">
-          Watermark Text
-        </Label>
-        <Input
-          id="watermark"
-          value={watermark}
-          onChange={(e) => setWatermark(e.target.value)}
-          placeholder="@yourhandle or yoursite.com"
-          className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
-        />
-      </div>
-
       {/* Display Title */}
       <div className="space-y-2">
         <Label htmlFor="displayTitle" className="text-xs font-medium text-muted-foreground">
@@ -93,19 +79,38 @@ export function ControlsPanel({ selectedLanguage, onSelectedLanguageChange }: Co
         />
       </div>
 
+      {/* Watermark Text */}
+      <div className="space-y-2">
+        <Label htmlFor="watermark" className="text-xs font-medium text-muted-foreground">
+          Watermark Text
+        </Label>
+        <Input
+          id="watermark"
+          value={watermark}
+          onChange={(e) => setWatermark(e.target.value)}
+          placeholder="@yourhandle or yoursite.com"
+          className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
+        />
+      </div>
+
       {/* Programming Language */}
       <div className="space-y-2">
         <Label htmlFor="language" className="text-xs font-medium text-muted-foreground">
           Programming Language
         </Label>
         <Select value={selectedLanguage} onValueChange={(value) => onSelectedLanguageChange(value as SupportedLanguage)}>
-          <SelectTrigger id="language" className="text-sm bg-gray-800 border-gray-700 text-gray-100">
+          <SelectTrigger id="language" className="w-full text-sm bg-gray-800 border-gray-700 text-gray-100">
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="bg-gray-800 border-gray-700">
             <SelectItem value="javascript" className="text-gray-100 hover:bg-gray-700">JavaScript</SelectItem>
             <SelectItem value="html" className="text-gray-100 hover:bg-gray-700">HTML</SelectItem>
             <SelectItem value="go" className="text-gray-100 hover:bg-gray-700">Go</SelectItem>
+            <SelectItem value="java" className="text-gray-100 hover:bg-gray-700">Java</SelectItem>
+            <SelectItem value="dart" className="text-gray-100 hover:bg-gray-700">Dart</SelectItem>
+            <SelectItem value="kotlin" className="text-gray-100 hover:bg-gray-700">Kotlin</SelectItem>
+            <SelectItem value="swift" className="text-gray-100 hover:bg-gray-700">Swift</SelectItem>
+            <SelectItem value="php" className="text-gray-100 hover:bg-gray-700">PHP</SelectItem>
           </SelectContent>
         </Select>
       </div>

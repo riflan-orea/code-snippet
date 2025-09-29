@@ -8,6 +8,11 @@ import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { html } from "@codemirror/lang-html";
 import { go } from "@codemirror/lang-go";
+import { java } from "@codemirror/lang-java";
+import { php } from "@codemirror/lang-php";
+import { StreamLanguage } from "@codemirror/language";
+import { swift } from "@codemirror/legacy-modes/mode/swift";
+import { kotlin } from "@codemirror/legacy-modes/mode/clike";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import html2canvas from "html2canvas";
 import { useCodeImageStore } from "@/lib/store";
@@ -29,12 +34,23 @@ import { GradientSelector } from "@/components/ui/gradient-selector";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { BackgroundImageSelector } from "@/components/ui/background-image-selector";
 
-function getLanguageExtension(language: 'javascript' | 'html' | 'go') {
+function getLanguageExtension(language: 'javascript' | 'html' | 'go' | 'java' | 'dart' | 'kotlin' | 'swift' | 'php') {
   switch (language) {
     case 'html':
       return html();
     case 'go':
       return go();
+    case 'java':
+      return java();
+    case 'dart':
+      // Dart uses JavaScript highlighting as a fallback since no official support exists
+      return javascript();
+    case 'kotlin':
+      return StreamLanguage.define(kotlin);
+    case 'swift':
+      return StreamLanguage.define(swift);
+    case 'php':
+      return php();
     case 'javascript':
     default:
       return javascript();
@@ -325,29 +341,26 @@ export default function CodeComparison() {
   const showControls = true;
 
   // State for left and right code snippets
-  const [leftCode, setLeftCode] = useState(`// JavaScript Example
-function greet(name) {
-  return \`Hello, \${name}!\`;
-}
-console.log(greet('World'));`);
-
-  const [rightCode, setRightCode] = useState(`// Go Example
-package main
-
-import "fmt"
-
-func greet(name string) string {
-	return fmt.Sprintf("Hello, %s!", name)
+  const [leftCode, setLeftCode] = useState(`// Kotlin Example
+fun greet(name: String): String {
+    return "Hello, \$name!"
 }
 
-func main() {
-	fmt.Println(greet("World"))
+fun main() {
+    println(greet("World"))
 }`);
 
-  const [leftTitle, setLeftTitle] = useState("JavaScript");
-  const [rightTitle, setRightTitle] = useState("Go");
-  const [leftLanguage, setLeftLanguage] = useState<SupportedLanguage>('javascript');
-  const [rightLanguage, setRightLanguage] = useState<SupportedLanguage>('go');
+  const [rightCode, setRightCode] = useState(`// Swift Example
+func greet(_ name: String) -> String {
+    return "Hello, \\(name)!"
+}
+
+print(greet("World"))`);
+
+  const [leftTitle, setLeftTitle] = useState("Kotlin");
+  const [rightTitle, setRightTitle] = useState("Swift");
+  const [leftLanguage, setLeftLanguage] = useState<SupportedLanguage>('kotlin');
+  const [rightLanguage, setRightLanguage] = useState<SupportedLanguage>('swift');
 
   // Debounce for code editors
   const debouncedSetLeftCode = debounce((value: string) => setLeftCode(value), 300);
@@ -757,13 +770,18 @@ func main() {
                       Left Language
                     </Label>
                     <Select value={leftLanguage} onValueChange={(value) => setLeftLanguage(value as SupportedLanguage)}>
-                      <SelectTrigger id="leftLanguage" className="text-sm bg-gray-800 border-gray-700 text-gray-100">
+                      <SelectTrigger id="leftLanguage" className="w-full text-sm bg-gray-800 border-gray-700 text-gray-100">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-gray-800 border-gray-700">
                         <SelectItem value="javascript" className="text-gray-100 hover:bg-gray-700">JavaScript</SelectItem>
                         <SelectItem value="html" className="text-gray-100 hover:bg-gray-700">HTML</SelectItem>
                         <SelectItem value="go" className="text-gray-100 hover:bg-gray-700">Go</SelectItem>
+                        <SelectItem value="java" className="text-gray-100 hover:bg-gray-700">Java</SelectItem>
+                        <SelectItem value="dart" className="text-gray-100 hover:bg-gray-700">Dart</SelectItem>
+                        <SelectItem value="kotlin" className="text-gray-100 hover:bg-gray-700">Kotlin</SelectItem>
+                        <SelectItem value="swift" className="text-gray-100 hover:bg-gray-700">Swift</SelectItem>
+                        <SelectItem value="php" className="text-gray-100 hover:bg-gray-700">PHP</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -773,13 +791,18 @@ func main() {
                       Right Language
                     </Label>
                     <Select value={rightLanguage} onValueChange={(value) => setRightLanguage(value as SupportedLanguage)}>
-                      <SelectTrigger id="rightLanguage" className="text-sm bg-gray-800 border-gray-700 text-gray-100">
+                      <SelectTrigger id="rightLanguage" className="w-full text-sm bg-gray-800 border-gray-700 text-gray-100">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-gray-800 border-gray-700">
                         <SelectItem value="javascript" className="text-gray-100 hover:bg-gray-700">JavaScript</SelectItem>
                         <SelectItem value="html" className="text-gray-100 hover:bg-gray-700">HTML</SelectItem>
                         <SelectItem value="go" className="text-gray-100 hover:bg-gray-700">Go</SelectItem>
+                        <SelectItem value="java" className="text-gray-100 hover:bg-gray-700">Java</SelectItem>
+                        <SelectItem value="dart" className="text-gray-100 hover:bg-gray-700">Dart</SelectItem>
+                        <SelectItem value="kotlin" className="text-gray-100 hover:bg-gray-700">Kotlin</SelectItem>
+                        <SelectItem value="swift" className="text-gray-100 hover:bg-gray-700">Swift</SelectItem>
+                        <SelectItem value="php" className="text-gray-100 hover:bg-gray-700">PHP</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
