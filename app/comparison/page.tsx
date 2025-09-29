@@ -2,7 +2,7 @@
 
 import { useRef, useCallback, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Download, AlignJustify, X, ArrowLeftRight } from "lucide-react";
+import { Download, AlignJustify, X, ArrowLeftRight, Rows3, Columns3 } from "lucide-react";
 import { EditorFrame } from "@/components/editor-frame";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
@@ -378,6 +378,7 @@ func main() {
 
   const fontSize = 14;
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [layoutMode, setLayoutMode] = useState<'row' | 'column'>('row');
   
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -396,6 +397,14 @@ func main() {
       setDisplayTitle('Code Comparison');
     }
   }, [displayTitle, setDisplayTitle]);
+
+  // Auto-switch to column layout on very small screens
+  useEffect(() => {
+    if (windowWidth < 640 && layoutMode === 'row') {
+      // Don't auto-switch if user manually selected row mode on small screen
+      // Only auto-switch on initial load or window resize
+    }
+  }, [windowWidth, layoutMode]);
 
   // Handle download
   const handleDownload = async () => {
@@ -503,6 +512,16 @@ func main() {
               </Button>
             </Link>
             <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLayoutMode(layoutMode === 'row' ? 'column' : 'row')}
+              className="inline-flex items-center gap-2"
+              title={`Switch to ${layoutMode === 'row' ? 'column' : 'row'} layout`}
+            >
+              {layoutMode === 'row' ? <Rows3 className="w-4 h-4" /> : <Columns3 className="w-4 h-4" />}
+              <span className="hidden sm:inline">{layoutMode === 'row' ? 'Column' : 'Row'}</span>
+            </Button>
+            <Button
               onClick={handleDownload}
               className="inline-flex items-center gap-2"
               size="sm"
@@ -576,9 +595,19 @@ func main() {
                       )}
                       
                       {/* Comparison Layout */}
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div className={`grid gap-6 ${
+                        layoutMode === 'row' 
+                          ? 'grid-cols-1 lg:grid-cols-2' 
+                          : 'grid-cols-1'
+                      }`}>
                         {/* Left Code Block */}
                         <div className="space-y-2">
+                          {layoutMode === 'column' && (
+                            <div className="flex items-center justify-between mb-2">
+                              <h3 className="text-white font-semibold text-sm opacity-75">{leftTitle || 'Left'}</h3>
+                              <div className="text-xs text-gray-400">{leftLanguage.toUpperCase()}</div>
+                            </div>
+                          )}
                           <EditorFrame
                             type={editorFrameType}
                             theme={editorFrameTheme}
@@ -625,6 +654,12 @@ func main() {
 
                         {/* Right Code Block */}
                         <div className="space-y-2">
+                          {layoutMode === 'column' && (
+                            <div className="flex items-center justify-between mb-2">
+                              <h3 className="text-white font-semibold text-sm opacity-75">{rightTitle || 'Right'}</h3>
+                              <div className="text-xs text-gray-400">{rightLanguage.toUpperCase()}</div>
+                            </div>
+                          )}
                           <EditorFrame
                             type={editorFrameType}
                             theme={editorFrameTheme}
@@ -695,7 +730,38 @@ func main() {
           <div className="h-full overflow-y-auto">
             <div className="p-4 space-y-6">
               <div className="space-y-4">
-                <h3 className="text-sm font-medium text-muted-foreground">Language Settings</h3>
+                <h3 className="text-sm font-medium text-muted-foreground">Layout & Language Settings</h3>
+                
+                {/* Layout Toggle */}
+                <div className="space-y-2">
+                  <Label className="text-xs font-medium text-muted-foreground">
+                    Layout Mode
+                  </Label>
+                  <div className="grid grid-cols-2 gap-1">
+                    <button
+                      onClick={() => setLayoutMode('row')}
+                      className={`px-3 py-2 text-xs rounded border transition-all flex items-center justify-center gap-2 ${
+                        layoutMode === 'row'
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-gray-600 text-gray-300 hover:border-gray-500'
+                      }`}
+                    >
+                      <Columns3 className="w-3 h-3" />
+                      Row
+                    </button>
+                    <button
+                      onClick={() => setLayoutMode('column')}
+                      className={`px-3 py-2 text-xs rounded border transition-all flex items-center justify-center gap-2 ${
+                        layoutMode === 'column'
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-gray-600 text-gray-300 hover:border-gray-500'
+                      }`}
+                    >
+                      <Rows3 className="w-3 h-3" />
+                      Column
+                    </button>
+                  </div>
+                </div>
                 
                 <div className="space-y-3">
                   <div className="space-y-2">
@@ -786,7 +852,38 @@ func main() {
               </div>
               <div className="flex-1 overflow-y-auto min-h-0 p-4 space-y-6">
                 <div className="space-y-4">
-                  <h3 className="text-sm font-medium text-muted-foreground">Language Settings</h3>
+                  <h3 className="text-sm font-medium text-muted-foreground">Layout & Language Settings</h3>
+                  
+                  {/* Layout Toggle */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium text-muted-foreground">
+                      Layout Mode
+                    </Label>
+                    <div className="grid grid-cols-2 gap-1">
+                      <button
+                        onClick={() => setLayoutMode('row')}
+                        className={`px-3 py-2 text-xs rounded border transition-all flex items-center justify-center gap-2 ${
+                          layoutMode === 'row'
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-gray-600 text-gray-300 hover:border-gray-500'
+                        }`}
+                      >
+                        <Columns3 className="w-3 h-3" />
+                        Row
+                      </button>
+                      <button
+                        onClick={() => setLayoutMode('column')}
+                        className={`px-3 py-2 text-xs rounded border transition-all flex items-center justify-center gap-2 ${
+                          layoutMode === 'column'
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-gray-600 text-gray-300 hover:border-gray-500'
+                        }`}
+                      >
+                        <Rows3 className="w-3 h-3" />
+                        Column
+                      </button>
+                    </div>
+                  </div>
                   
                   <div className="space-y-3">
                     <div className="space-y-2">
