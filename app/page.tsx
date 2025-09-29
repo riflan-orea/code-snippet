@@ -2,7 +2,8 @@
 
 import { useRef, useCallback, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Download, AlignJustify, X } from "lucide-react";
+import { Download, AlignJustify, X, ArrowLeftRight } from "lucide-react";
+import Link from "next/link";
 import { EditorFrame } from "@/components/editor-frame";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
@@ -279,6 +280,12 @@ export default function CodeImageGenerator() {
             </h1>
           </div>
           <div className="flex items-center gap-2 md:gap-3">
+            <Link href="/comparison">
+              <Button variant="ghost" size="sm" className="inline-flex items-center gap-2">
+                <ArrowLeftRight className="w-4 h-4" />
+                <span className="hidden sm:inline">Compare</span>
+              </Button>
+            </Link>
             <Button
               onClick={handleDownload}
               className="inline-flex items-center gap-2"
