@@ -549,13 +549,13 @@ func main() {
             {/* Canvas Content */}
             <div className="flex-1 overflow-auto p-4 md:p-8">
               <div className="flex items-center justify-center min-h-full">
-                <div className="w-full max-w-7xl">
+                <div className={`w-full ${layoutMode === 'column' ? 'max-w-4xl' : 'max-w-7xl'}`}>
                   <div
                     ref={previewRef}
                     className="overflow-hidden rounded-xl bg-gray-900 relative mx-auto shadow-2xl max-w-full"
                     style={{
                       minHeight: "400px",
-                      padding: "40px",
+                      padding: layoutMode === 'column' ? "32px" : "40px",
                       ...mainBackgroundStyle,
                       "--background": backgroundColor,
                       "--foreground": "#f9fafb",
@@ -595,23 +595,17 @@ func main() {
                       )}
                       
                       {/* Comparison Layout */}
-                      <div className={`grid gap-6 ${
+                      <div className={`grid ${
                         layoutMode === 'row' 
-                          ? 'grid-cols-1 lg:grid-cols-2' 
-                          : 'grid-cols-1'
+                          ? 'gap-6 grid-cols-1 lg:grid-cols-2' 
+                          : 'gap-4 grid-cols-1'
                       }`}>
                         {/* Left Code Block */}
                         <div className="space-y-2">
-                          {layoutMode === 'column' && (
-                            <div className="flex items-center justify-between mb-2">
-                              <h3 className="text-white font-semibold text-sm opacity-75">{leftTitle || 'Left'}</h3>
-                              <div className="text-xs text-gray-400">{leftLanguage.toUpperCase()}</div>
-                            </div>
-                          )}
                           <EditorFrame
                             type={editorFrameType}
                             theme={editorFrameTheme}
-                            title={leftTitle}
+                            title={layoutMode === 'column' ? `${leftTitle} (${leftLanguage.toUpperCase()})` : leftTitle}
                             showControls={showControls}
                           >
                             <div
@@ -654,16 +648,10 @@ func main() {
 
                         {/* Right Code Block */}
                         <div className="space-y-2">
-                          {layoutMode === 'column' && (
-                            <div className="flex items-center justify-between mb-2">
-                              <h3 className="text-white font-semibold text-sm opacity-75">{rightTitle || 'Right'}</h3>
-                              <div className="text-xs text-gray-400">{rightLanguage.toUpperCase()}</div>
-                            </div>
-                          )}
                           <EditorFrame
                             type={editorFrameType}
                             theme={editorFrameTheme}
-                            title={rightTitle}
+                            title={layoutMode === 'column' ? `${rightTitle} (${rightLanguage.toUpperCase()})` : rightTitle}
                             showControls={showControls}
                           >
                             <div
