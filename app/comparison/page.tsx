@@ -326,68 +326,22 @@ export default function CodeComparison() {
 
   // State for left and right code snippets
   const [leftCode, setLeftCode] = useState(`// JavaScript Example
-function fibonacci(n) {
-  if (n <= 1) return n;
-  return fibonacci(n - 1) + fibonacci(n - 2);
+function greet(name) {
+  return \`Hello, \${name}!\`;
 }
-
-// Array methods and async/await
-async function processNumbers(numbers) {
-  const results = await Promise.all(
-    numbers.map(async (num) => {
-      return await fibonacci(num);
-    })
-  );
-  return results.filter(result => result > 10);
-}
-
-console.log(processNumbers([5, 6, 7, 8]));`);
+console.log(greet('World'));`);
 
   const [rightCode, setRightCode] = useState(`// Go Example
 package main
 
-import (
-	"fmt"
-	"sync"
-)
+import "fmt"
 
-func fibonacci(n int) int {
-	if n <= 1 {
-		return n
-	}
-	return fibonacci(n-1) + fibonacci(n-2)
-}
-
-// Goroutines and channels
-func processNumbers(numbers []int) []int {
-	var wg sync.WaitGroup
-	results := make(chan int, len(numbers))
-	
-	for _, num := range numbers {
-		wg.Add(1)
-		go func(n int) {
-			defer wg.Done()
-			results <- fibonacci(n)
-		}(num)
-	}
-	
-	go func() {
-		wg.Wait()
-		close(results)
-	}()
-	
-	var filtered []int
-	for result := range results {
-		if result > 10 {
-			filtered = append(filtered, result)
-		}
-	}
-	return filtered
+func greet(name string) string {
+	return fmt.Sprintf("Hello, %s!", name)
 }
 
 func main() {
-	numbers := []int{5, 6, 7, 8}
-	fmt.Println(processNumbers(numbers))
+	fmt.Println(greet("World"))
 }`);
 
   const [leftTitle, setLeftTitle] = useState("JavaScript");
@@ -744,7 +698,7 @@ func main() {
                 <h3 className="text-sm font-medium text-muted-foreground">Language Settings</h3>
                 
                 <div className="space-y-3">
-                  <div>
+                  <div className="space-y-2">
                     <Label htmlFor="leftLanguage" className="text-xs font-medium text-muted-foreground">
                       Left Language
                     </Label>
@@ -760,7 +714,7 @@ func main() {
                     </Select>
                   </div>
                   
-                  <div>
+                  <div className="space-y-2">
                     <Label htmlFor="rightLanguage" className="text-xs font-medium text-muted-foreground">
                       Right Language
                     </Label>
@@ -778,7 +732,7 @@ func main() {
                 </div>
 
                 <div className="space-y-3">
-                  <div>
+                  <div className="space-y-2">
                     <Label htmlFor="leftTitle" className="text-xs font-medium text-muted-foreground">
                       Left Window Title
                     </Label>
@@ -791,7 +745,7 @@ func main() {
                     />
                   </div>
                   
-                  <div>
+                  <div className="space-y-2">
                     <Label htmlFor="rightTitle" className="text-xs font-medium text-muted-foreground">
                       Right Window Title
                     </Label>
@@ -835,7 +789,7 @@ func main() {
                   <h3 className="text-sm font-medium text-muted-foreground">Language Settings</h3>
                   
                   <div className="space-y-3">
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="leftLanguageMobile" className="text-xs font-medium text-muted-foreground">
                         Left Language
                       </Label>
@@ -851,7 +805,7 @@ func main() {
                       </Select>
                     </div>
                     
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="rightLanguageMobile" className="text-xs font-medium text-muted-foreground">
                         Right Language
                       </Label>
@@ -869,7 +823,7 @@ func main() {
                   </div>
 
                   <div className="space-y-3">
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="leftTitleMobile" className="text-xs font-medium text-muted-foreground">
                         Left Window Title
                       </Label>
@@ -882,7 +836,7 @@ func main() {
                       />
                     </div>
                     
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="rightTitleMobile" className="text-xs font-medium text-muted-foreground">
                         Right Window Title
                       </Label>
