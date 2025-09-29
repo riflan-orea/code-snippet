@@ -21,6 +21,12 @@ import Image from "next/image";
 import { ControlsPanel, SupportedLanguage } from "@/components/controls-panel";
 import { createPortal } from "react-dom";
 import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { GradientSelector } from "@/components/ui/gradient-selector";
+import { ColorPicker } from "@/components/ui/color-picker";
+import { BackgroundImageSelector } from "@/components/ui/background-image-selector";
 
 function getLanguageExtension(language: 'javascript' | 'html' | 'go') {
   switch (language) {
@@ -61,6 +67,237 @@ function createBackgroundStyle(
     default:
       return { backgroundColor };
   }
+}
+
+// Simplified controls panel for comparison page - excludes inputs that don't work
+function ComparisonControlsPanel() {
+  const {
+    showLineNumbers,
+    setShowLineNumbers,
+    displayTitle,
+    setDisplayTitle,
+    watermark,
+    setWatermark,
+    watermarkOpacity,
+    setWatermarkOpacity,
+    backgroundType,
+    setBackgroundType,
+    selectedGradient,
+    setSelectedGradient,
+    customGradient,
+    setCustomGradient,
+    gradientAngle,
+    setGradientAngle,
+    backgroundColor,
+    setBackgroundColor,
+    backgroundImage,
+    setBackgroundImage,
+    backgroundImageOpacity,
+    setBackgroundImageOpacity,
+    backgroundImageSize,
+    setBackgroundImageSize,
+    backgroundImagePosition,
+    setBackgroundImagePosition,
+  } = useCodeImageStore();
+
+  return (
+    <div className="space-y-6">
+      {/* Watermark Text */}
+      <div className="space-y-2">
+        <Label htmlFor="watermark" className="text-xs font-medium text-muted-foreground">
+          Watermark Text
+        </Label>
+        <Input
+          id="watermark"
+          value={watermark}
+          onChange={(e) => setWatermark(e.target.value)}
+          placeholder="@yourhandle or yoursite.com"
+          className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
+        />
+      </div>
+
+      {/* Display Title */}
+      <div className="space-y-2">
+        <Label htmlFor="displayTitle" className="text-xs font-medium text-muted-foreground">
+          Display Title
+        </Label>
+        <Input
+          id="displayTitle"
+          value={displayTitle}
+          onChange={(e) => setDisplayTitle(e.target.value)}
+          placeholder="Optional title above comparison"
+          className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
+        />
+      </div>
+
+      {/* Show Line Numbers */}
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          id="showLineNumbers"
+          checked={showLineNumbers}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setShowLineNumbers(e.target.checked)}
+          className="rounded border-gray-700 bg-gray-800 text-primary focus:ring-primary"
+        />
+        <Label htmlFor="showLineNumbers" className="text-sm text-gray-100">
+          Show Line Numbers
+        </Label>
+      </div>
+
+      {/* Background Section */}
+      <div className="space-y-4">
+        <Label className="text-xs font-medium text-muted-foreground">
+          Background Settings
+        </Label>
+
+        {/* Background Type Selector */}
+        <div className="space-y-2">
+          <Label className="text-xs font-medium text-muted-foreground">
+            Background Type
+          </Label>
+          <div className="grid grid-cols-3 gap-1">
+            <button
+              onClick={() => setBackgroundType('solid')}
+              className={`px-3 py-2 text-xs rounded border transition-all ${
+                backgroundType === 'solid'
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-gray-600 text-gray-300 hover:border-gray-500'
+              }`}
+            >
+              Solid
+            </button>
+            <button
+              onClick={() => setBackgroundType('gradient')}
+              className={`px-3 py-2 text-xs rounded border transition-all ${
+                backgroundType === 'gradient'
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-gray-600 text-gray-300 hover:border-gray-500'
+              }`}
+            >
+              Gradient
+            </button>
+            <button
+              onClick={() => setBackgroundType('image')}
+              className={`px-3 py-2 text-xs rounded border transition-all ${
+                backgroundType === 'image'
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-gray-600 text-gray-300 hover:border-gray-500'
+              }`}
+            >
+              Image
+            </button>
+          </div>
+        </div>
+
+        {/* Solid Color Options */}
+        {backgroundType === 'solid' && (
+          <div className="space-y-3">
+            {/* Preset Colors */}
+            <div className="space-y-2">
+              <Label className="text-xs font-medium text-muted-foreground">
+                Preset Colors
+              </Label>
+              <div className="grid grid-cols-6 gap-1">
+                {[
+                  { name: 'Slate', value: '#1e293b' },
+                  { name: 'Gray', value: '#374151' },
+                  { name: 'Zinc', value: '#3f3f46' },
+                  { name: 'Neutral', value: '#52525b' },
+                  { name: 'Stone', value: '#57534e' },
+                  { name: 'Red', value: '#7f1d1d' },
+                  { name: 'Orange', value: '#9a3412' },
+                  { name: 'Amber', value: '#92400e' },
+                  { name: 'Yellow', value: '#a16207' },
+                  { name: 'Lime', value: '#3f6212' },
+                  { name: 'Green', value: '#14532d' },
+                  { name: 'Emerald', value: '#064e3b' },
+                  { name: 'Teal', value: '#134e4a' },
+                  { name: 'Cyan', value: '#164e63' },
+                  { name: 'Sky', value: '#0c4a6e' },
+                  { name: 'Blue', value: '#1e3a8a' },
+                  { name: 'Indigo', value: '#312e81' },
+                  { name: 'Violet', value: '#4c1d95' },
+                  { name: 'Purple', value: '#581c87' },
+                  { name: 'Fuchsia', value: '#701a75' },
+                  { name: 'Pink', value: '#831843' },
+                  { name: 'Rose', value: '#9f1239' },
+                ].map((color) => (
+                  <div key={color.value} className="flex flex-col items-center gap-1">
+                    <button
+                      onClick={() => setBackgroundColor(color.value)}
+                      className={`w-8 h-8 rounded border transition-all ${
+                        backgroundColor === color.value
+                          ? 'border-primary ring-1 ring-primary'
+                          : 'border-gray-600 hover:border-gray-500'
+                      }`}
+                      style={{ backgroundColor: color.value }}
+                      title={color.name}
+                      aria-label={`Select ${color.name} background color`}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Custom Color Picker */}
+            <ColorPicker
+              value={backgroundColor}
+              onChange={setBackgroundColor}
+              label="Custom Color"
+            />
+          </div>
+        )}
+
+        {/* Gradient Background Options */}
+        {backgroundType === 'gradient' && (
+          <GradientSelector
+            backgroundType={backgroundType}
+            setBackgroundType={setBackgroundType}
+            selectedGradient={selectedGradient}
+            setSelectedGradient={setSelectedGradient}
+            customGradient={customGradient}
+            setCustomGradient={setCustomGradient}
+            gradientAngle={gradientAngle}
+            setGradientAngle={setGradientAngle}
+          />
+        )}
+
+        {/* Background Image Options */}
+        {backgroundType === 'image' && (
+          <BackgroundImageSelector
+            backgroundType={backgroundType}
+            setBackgroundType={setBackgroundType}
+            backgroundImage={backgroundImage}
+            setBackgroundImage={setBackgroundImage}
+            backgroundImageOpacity={backgroundImageOpacity}
+            setBackgroundImageOpacity={setBackgroundImageOpacity}
+            backgroundImageSize={backgroundImageSize}
+            setBackgroundImageSize={setBackgroundImageSize}
+            backgroundImagePosition={backgroundImagePosition}
+            setBackgroundImagePosition={setBackgroundImagePosition}
+          />
+        )}
+      </div>
+
+      {/* Watermark Opacity */}
+      {watermark && (
+        <div className="space-y-2">
+          <Label htmlFor="watermarkOpacity" className="text-xs font-medium text-muted-foreground">
+            Watermark Opacity: {Math.round(watermarkOpacity * 100)}%
+          </Label>
+          <Slider
+            id="watermarkOpacity"
+            min={0}
+            max={1}
+            step={0.1}
+            value={[watermarkOpacity]}
+            onValueChange={(value) => setWatermarkOpacity(value[0])}
+            className="py-1"
+          />
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function CodeComparison() {
@@ -340,7 +577,7 @@ end`);
                           className="mb-6 font-bold text-white text-center text-2xl"
                           style={{ fontSize: `${fontSize + 8}px` }}
                         >
-                          Syntax Comparison
+                          {displayTitle}
                         </div>
                       )}
                       
@@ -348,10 +585,6 @@ end`);
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Left Code Block */}
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <h3 className="text-white font-semibold text-lg">{leftTitle}</h3>
-                            <div className="text-xs text-gray-400">Influenced by Prolog and Smalltalk</div>
-                          </div>
                           <EditorFrame
                             type={editorFrameType}
                             theme={editorFrameTheme}
@@ -398,10 +631,6 @@ end`);
 
                         {/* Right Code Block */}
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <h3 className="text-white font-semibold text-lg">{rightTitle}</h3>
-                            <div className="text-xs text-gray-400">Influenced by Ruby and Clojure</div>
-                          </div>
                           <EditorFrame
                             type={editorFrameType}
                             theme={editorFrameTheme}
@@ -469,64 +698,67 @@ end`);
 
         {/* Sidebar (Desktop) */}
         <aside className={`${sidebarOpen ? 'w-80' : 'w-0'} hidden md:block transition-all duration-200 bg-card/50 backdrop-blur-sm overflow-hidden border-gray-800 border-l`}>
-          <div className="p-4 space-y-6">
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-muted-foreground">Language Settings</h3>
-              
-              <div className="space-y-3">
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">Left Language</label>
-                  <select
-                    value={leftLanguage}
-                    onChange={(e) => setLeftLanguage(e.target.value as SupportedLanguage)}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
-                  >
-                    <option value="javascript">JavaScript</option>
-                    <option value="html">HTML</option>
-                    <option value="go">Go</option>
-                  </select>
-                </div>
+          <div className="h-full overflow-y-auto">
+            <div className="p-4 space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-sm font-medium text-muted-foreground">Language Settings</h3>
                 
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">Right Language</label>
-                  <select
-                    value={rightLanguage}
-                    onChange={(e) => setRightLanguage(e.target.value as SupportedLanguage)}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
-                  >
-                    <option value="javascript">JavaScript</option>
-                    <option value="html">HTML</option>
-                    <option value="go">Go</option>
-                  </select>
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">Left Language</label>
+                    <select
+                      value={leftLanguage}
+                      onChange={(e) => setLeftLanguage(e.target.value as SupportedLanguage)}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
+                    >
+                      <option value="javascript">JavaScript</option>
+                      <option value="html">HTML</option>
+                      <option value="go">Go</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">Right Language</label>
+                    <select
+                      value={rightLanguage}
+                      onChange={(e) => setRightLanguage(e.target.value as SupportedLanguage)}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
+                    >
+                      <option value="javascript">JavaScript</option>
+                      <option value="html">HTML</option>
+                      <option value="go">Go</option>
+                    </select>
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-3">
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">Left Title</label>
-                  <input
-                    type="text"
-                    value={leftTitle}
-                    onChange={(e) => setLeftTitle(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
-                    placeholder="Left code title"
-                  />
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-2 block">Right Title</label>
-                  <input
-                    type="text"
-                    value={rightTitle}
-                    onChange={(e) => setRightTitle(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
-                    placeholder="Right code title"
-                  />
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">Left Window Title</label>
+                    <input
+                      type="text"
+                      value={leftTitle}
+                      onChange={(e) => setLeftTitle(e.target.value)}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
+                      placeholder="Left window title"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">Right Window Title</label>
+                    <input
+                      type="text"
+                      value={rightTitle}
+                      onChange={(e) => setRightTitle(e.target.value)}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
+                      placeholder="Right window title"
+                    />
+                  </div>
                 </div>
               </div>
+              
+              {/* Simplified Controls Panel - excluding title and language inputs that don't work */}
+              <ComparisonControlsPanel />
             </div>
-            
-            <ControlsPanel selectedLanguage={leftLanguage} onSelectedLanguageChange={() => {}} />
           </div>
         </aside>
 
@@ -582,30 +814,30 @@ end`);
 
                   <div className="space-y-3">
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-2 block">Left Title</label>
+                      <label className="text-sm font-medium text-foreground mb-2 block">Left Window Title</label>
                       <input
                         type="text"
                         value={leftTitle}
                         onChange={(e) => setLeftTitle(e.target.value)}
                         className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
-                        placeholder="Left code title"
+                        placeholder="Left window title"
                       />
                     </div>
                     
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-2 block">Right Title</label>
+                      <label className="text-sm font-medium text-foreground mb-2 block">Right Window Title</label>
                       <input
                         type="text"
                         value={rightTitle}
                         onChange={(e) => setRightTitle(e.target.value)}
                         className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
-                        placeholder="Right code title"
+                        placeholder="Right window title"
                       />
                     </div>
                   </div>
                 </div>
                 
-                <ControlsPanel selectedLanguage={leftLanguage} onSelectedLanguageChange={() => {}} />
+                <ComparisonControlsPanel />
               </div>
             </div>
           </div>,
