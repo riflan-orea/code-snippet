@@ -9,7 +9,7 @@ import { ColorPicker } from "@/components/ui/color-picker";
 import { BackgroundImageSelector } from "@/components/ui/background-image-selector";
 import { useCodeImageStore } from "@/lib/store";
 
-export type SupportedLanguage = 'javascript' | 'html' | 'go' | 'java' | 'dart';
+export type SupportedLanguage = 'javascript' | 'html' | 'go' | 'java' | 'dart' | 'kotlin' | 'swift' | 'php';
 
 type ControlsPanelProps = {
   selectedLanguage: SupportedLanguage;
@@ -99,7 +99,7 @@ export function ControlsPanel({ selectedLanguage, onSelectedLanguageChange }: Co
           Programming Language
         </Label>
         <Select value={selectedLanguage} onValueChange={(value) => onSelectedLanguageChange(value as SupportedLanguage)}>
-          <SelectTrigger id="language" className="text-sm bg-gray-800 border-gray-700 text-gray-100">
+          <SelectTrigger id="language" className="w-full text-sm bg-gray-800 border-gray-700 text-gray-100">
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="bg-gray-800 border-gray-700">
@@ -108,6 +108,9 @@ export function ControlsPanel({ selectedLanguage, onSelectedLanguageChange }: Co
             <SelectItem value="go" className="text-gray-100 hover:bg-gray-700">Go</SelectItem>
             <SelectItem value="java" className="text-gray-100 hover:bg-gray-700">Java</SelectItem>
             <SelectItem value="dart" className="text-gray-100 hover:bg-gray-700">Dart</SelectItem>
+            <SelectItem value="kotlin" className="text-gray-100 hover:bg-gray-700">Kotlin</SelectItem>
+            <SelectItem value="swift" className="text-gray-100 hover:bg-gray-700">Swift</SelectItem>
+            <SelectItem value="php" className="text-gray-100 hover:bg-gray-700">PHP</SelectItem>
           </SelectContent>
         </Select>
       </div>

@@ -10,6 +10,10 @@ import { javascript } from "@codemirror/lang-javascript";
 import { html } from "@codemirror/lang-html";
 import { go } from "@codemirror/lang-go";
 import { java } from "@codemirror/lang-java";
+import { php } from "@codemirror/lang-php";
+import { StreamLanguage } from "@codemirror/language";
+import { swift } from "@codemirror/legacy-modes/mode/swift";
+import { kotlin } from "@codemirror/legacy-modes/mode/clike";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import html2canvas from "html2canvas";
 import { useCodeImageStore } from "@/lib/store";
@@ -23,7 +27,7 @@ import Image from "next/image";
 import { ControlsPanel, SupportedLanguage } from "@/components/controls-panel";
 import { createPortal } from "react-dom";
 
-function getLanguageExtension(language: 'javascript' | 'html' | 'go' | 'java' | 'dart') {
+function getLanguageExtension(language: 'javascript' | 'html' | 'go' | 'java' | 'dart' | 'kotlin' | 'swift' | 'php') {
   switch (language) {
     case 'html':
       return html();
@@ -34,6 +38,12 @@ function getLanguageExtension(language: 'javascript' | 'html' | 'go' | 'java' | 
     case 'dart':
       // Dart uses JavaScript highlighting as a fallback since no official support exists
       return javascript();
+    case 'kotlin':
+      return StreamLanguage.define(kotlin);
+    case 'swift':
+      return StreamLanguage.define(swift);
+    case 'php':
+      return php();
     case 'javascript':
     default:
       return javascript();
