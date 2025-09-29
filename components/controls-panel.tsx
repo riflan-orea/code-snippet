@@ -9,7 +9,7 @@ import { ColorPicker } from "@/components/ui/color-picker";
 import { BackgroundImageSelector } from "@/components/ui/background-image-selector";
 import { useCodeImageStore } from "@/lib/store";
 
-export type SupportedLanguage = 'javascript' | 'html' | 'go';
+export type SupportedLanguage = 'javascript' | 'html' | 'go' | 'java' | 'dart';
 
 type ControlsPanelProps = {
   selectedLanguage: SupportedLanguage;
@@ -106,6 +106,8 @@ export function ControlsPanel({ selectedLanguage, onSelectedLanguageChange }: Co
             <SelectItem value="javascript" className="text-gray-100 hover:bg-gray-700">JavaScript</SelectItem>
             <SelectItem value="html" className="text-gray-100 hover:bg-gray-700">HTML</SelectItem>
             <SelectItem value="go" className="text-gray-100 hover:bg-gray-700">Go</SelectItem>
+            <SelectItem value="java" className="text-gray-100 hover:bg-gray-700">Java</SelectItem>
+            <SelectItem value="dart" className="text-gray-100 hover:bg-gray-700">Dart</SelectItem>
           </SelectContent>
         </Select>
       </div>

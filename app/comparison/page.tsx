@@ -8,6 +8,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { html } from "@codemirror/lang-html";
 import { go } from "@codemirror/lang-go";
+import { java } from "@codemirror/lang-java";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import html2canvas from "html2canvas";
 import { useCodeImageStore } from "@/lib/store";
@@ -29,12 +30,17 @@ import { GradientSelector } from "@/components/ui/gradient-selector";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { BackgroundImageSelector } from "@/components/ui/background-image-selector";
 
-function getLanguageExtension(language: 'javascript' | 'html' | 'go') {
+function getLanguageExtension(language: 'javascript' | 'html' | 'go' | 'java' | 'dart') {
   switch (language) {
     case 'html':
       return html();
     case 'go':
       return go();
+    case 'java':
+      return java();
+    case 'dart':
+      // Dart uses JavaScript highlighting as a fallback since no official support exists
+      return javascript();
     case 'javascript':
     default:
       return javascript();
@@ -325,29 +331,30 @@ export default function CodeComparison() {
   const showControls = true;
 
   // State for left and right code snippets
-  const [leftCode, setLeftCode] = useState(`// JavaScript Example
-function greet(name) {
-  return \`Hello, \${name}!\`;
-}
-console.log(greet('World'));`);
-
-  const [rightCode, setRightCode] = useState(`// Go Example
-package main
-
-import "fmt"
-
-func greet(name string) string {
-	return fmt.Sprintf("Hello, %s!", name)
-}
-
-func main() {
-	fmt.Println(greet("World"))
+  const [leftCode, setLeftCode] = useState(`// Java Example
+public class Main {
+    public static String greet(String name) {
+        return "Hello, " + name + "!";
+    }
+    
+    public static void main(String[] args) {
+        System.out.println(greet("World"));
+    }
 }`);
 
-  const [leftTitle, setLeftTitle] = useState("JavaScript");
-  const [rightTitle, setRightTitle] = useState("Go");
-  const [leftLanguage, setLeftLanguage] = useState<SupportedLanguage>('javascript');
-  const [rightLanguage, setRightLanguage] = useState<SupportedLanguage>('go');
+  const [rightCode, setRightCode] = useState(`// Dart Example
+void main() {
+  print(greet('World'));
+}
+
+String greet(String name) {
+  return 'Hello, \$name!';
+}`);
+
+  const [leftTitle, setLeftTitle] = useState("Java");
+  const [rightTitle, setRightTitle] = useState("Dart");
+  const [leftLanguage, setLeftLanguage] = useState<SupportedLanguage>('java');
+  const [rightLanguage, setRightLanguage] = useState<SupportedLanguage>('dart');
 
   // Debounce for code editors
   const debouncedSetLeftCode = debounce((value: string) => setLeftCode(value), 300);
@@ -764,6 +771,8 @@ func main() {
                         <SelectItem value="javascript" className="text-gray-100 hover:bg-gray-700">JavaScript</SelectItem>
                         <SelectItem value="html" className="text-gray-100 hover:bg-gray-700">HTML</SelectItem>
                         <SelectItem value="go" className="text-gray-100 hover:bg-gray-700">Go</SelectItem>
+                        <SelectItem value="java" className="text-gray-100 hover:bg-gray-700">Java</SelectItem>
+                        <SelectItem value="dart" className="text-gray-100 hover:bg-gray-700">Dart</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -780,6 +789,8 @@ func main() {
                         <SelectItem value="javascript" className="text-gray-100 hover:bg-gray-700">JavaScript</SelectItem>
                         <SelectItem value="html" className="text-gray-100 hover:bg-gray-700">HTML</SelectItem>
                         <SelectItem value="go" className="text-gray-100 hover:bg-gray-700">Go</SelectItem>
+                        <SelectItem value="java" className="text-gray-100 hover:bg-gray-700">Java</SelectItem>
+                        <SelectItem value="dart" className="text-gray-100 hover:bg-gray-700">Dart</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
