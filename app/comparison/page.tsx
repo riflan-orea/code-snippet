@@ -304,6 +304,7 @@ export default function CodeComparison() {
   const {
     showLineNumbers,
     displayTitle,
+    setDisplayTitle,
     watermark,
     watermarkOpacity,
     backgroundType,
@@ -402,6 +403,13 @@ end`);
       return () => mq.removeEventListener('change', listener);
     }
   }, []);
+
+  // Set default display title for comparison page
+  useEffect(() => {
+    if (!displayTitle) {
+      setDisplayTitle('Code Comparison');
+    }
+  }, [displayTitle, setDisplayTitle]);
 
   // Handle download
   const handleDownload = async () => {
@@ -709,7 +717,7 @@ end`);
                     <select
                       value={leftLanguage}
                       onChange={(e) => setLeftLanguage(e.target.value as SupportedLanguage)}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
+                      className="text-sm bg-gray-800 border-gray-700 text-gray-100"
                     >
                       <option value="javascript">JavaScript</option>
                       <option value="html">HTML</option>
@@ -722,7 +730,7 @@ end`);
                     <select
                       value={rightLanguage}
                       onChange={(e) => setRightLanguage(e.target.value as SupportedLanguage)}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
+                      className="text-sm bg-gray-800 border-gray-700 text-gray-100"
                     >
                       <option value="javascript">JavaScript</option>
                       <option value="html">HTML</option>
@@ -738,7 +746,7 @@ end`);
                       type="text"
                       value={leftTitle}
                       onChange={(e) => setLeftTitle(e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
+                      className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
                       placeholder="Left window title"
                     />
                   </div>
@@ -749,7 +757,7 @@ end`);
                       type="text"
                       value={rightTitle}
                       onChange={(e) => setRightTitle(e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
+                      className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
                       placeholder="Right window title"
                     />
                   </div>
@@ -790,7 +798,7 @@ end`);
                       <select
                         value={leftLanguage}
                         onChange={(e) => setLeftLanguage(e.target.value as SupportedLanguage)}
-                        className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
+                        className="text-sm bg-gray-800 border-gray-700 text-gray-100"
                       >
                         <option value="javascript">JavaScript</option>
                         <option value="html">HTML</option>
@@ -803,7 +811,7 @@ end`);
                       <select
                         value={rightLanguage}
                         onChange={(e) => setRightLanguage(e.target.value as SupportedLanguage)}
-                        className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
+                        className="text-sm bg-gray-800 border-gray-700 text-gray-100"
                       >
                         <option value="javascript">JavaScript</option>
                         <option value="html">HTML</option>
@@ -819,7 +827,7 @@ end`);
                         type="text"
                         value={leftTitle}
                         onChange={(e) => setLeftTitle(e.target.value)}
-                        className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
+                        className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
                         placeholder="Left window title"
                       />
                     </div>
@@ -830,7 +838,7 @@ end`);
                         type="text"
                         value={rightTitle}
                         onChange={(e) => setRightTitle(e.target.value)}
-                        className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-sm"
+                        className="text-sm bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-400"
                         placeholder="Right window title"
                       />
                     </div>
