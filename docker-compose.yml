@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    image: code-snippet:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+    # Uncomment to mount code for iterative dev with docker (then run yarn dev):
+    # volumes:
+    #   - .:/app
+    # command: ["yarn", "dev"]
+

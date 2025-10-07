@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-static";
+
 import { useRef, useCallback, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Download, AlignJustify, X, ArrowLeftRight, Rows3, Columns3 } from "lucide-react";
